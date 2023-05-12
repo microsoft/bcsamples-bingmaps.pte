@@ -11,6 +11,8 @@ on:
         description: Direct COMMIT (Y/N)
         required: false
         default: 'N'
+  schedule:
+    - cron: '0 0 * * *'
 
 permissions:
   contents: read
