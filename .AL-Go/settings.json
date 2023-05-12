@@ -1,6 +1,13 @@
 {
   "country": "us",
-  "appFolders": [],
-  "testFolders": [],
-  "bcptTestFolders": []
+  "VersioningStrategy": 16,
+  "applicationDependency": "22.0.0.0",
+  "artifact": "https://bcartifacts.azureedge.net/sandbox/22.0.0.0/us/first",
+  "appFolders": [
+    "BingMaps"
+  ],
+  "testFolders": [
+    "BingMaps.Test"
+  ],
+  "RepoVersion": "5.0"
 }

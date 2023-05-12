@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ExportedData>
+    <TenantWebServiceCollection>
+        <TenantWebService>
+            <ObjectType>Page</ObjectType>
+            <ServiceName>CustomerLocation</ServiceName>
+            <ObjectID>74124</ObjectID>
+            <Published>true</Published>
+        </TenantWebService>
+        <TenantWebService>
+            <ObjectType>CodeUnit</ObjectType>
+            <ServiceName>BingMapsSetup</ServiceName>
+            <ObjectID>74123</ObjectID>
+            <Published>true</Published>
+        </TenantWebService>
+    </TenantWebServiceCollection>
+</ExportedData>
