@@ -1,8 +1,6 @@
 {
   "country": "us",
   "VersioningStrategy": 16,
-  "applicationDependency": "22.0.0.0",
-  "artifact": "https://bcartifacts.azureedge.net/sandbox/22.0.0.0/us/first",
   "appFolders": [
     "BingMaps"
   ],
