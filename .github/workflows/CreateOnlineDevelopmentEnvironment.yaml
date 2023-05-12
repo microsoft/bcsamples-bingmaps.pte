@@ -21,7 +21,7 @@ permissions:
 
 defaults:
   run:
-    shell: powershell
+    shell: pwsh
 
 env:
   ALGoOrgSettings: ${{ vars.ALGoOrgSettings }}
@@ -29,7 +29,7 @@ env:
 
 jobs:
   Initialize:
-    runs-on: [ windows-latest ]
+    runs-on: [ ubuntu-latest ]
     outputs:
       deviceCode: ${{ steps.authenticate.outputs.deviceCode }}
       telemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
@@ -41,13 +41,13 @@ jobs:
         id: init
         uses: microsoft/AL-Go-Actions/WorkflowInitialize@preview
         with:
-          shell: powershell
+          shell: pwsh
           eventId: "DO0093"
 
       - name: Read settings
         uses: microsoft/AL-Go-Actions/ReadSettings@preview
         with:
-          shell: powershell
+          shell: pwsh
           parentTelemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
 
       - name: Read secrets
@@ -55,7 +55,7 @@ jobs:
         env:
           secrets: ${{ toJson(secrets) }}
         with:
-          shell: powershell
+          shell: pwsh
           parentTelemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
           settingsJson: ${{ env.Settings }}
           secrets: 'adminCenterApiCredentials'
@@ -84,7 +84,7 @@ jobs:
           }
 
   CreateDevelopmentEnvironment:
-    runs-on: [ windows-latest ]
+    runs-on: [ ubuntu-latest ]
     name: Create Development Environment
     needs: [ Initialize ]
     env:
@@ -96,7 +96,7 @@ jobs:
       - name: Read settings
         uses: microsoft/AL-Go-Actions/ReadSettings@preview
         with:
-          shell: powershell
+          shell: pwsh
           parentTelemetryScopeJson: ${{ needs.Initialize.outputs.telemetryScopeJson }}
 
       - name: Read secrets
@@ -104,7 +104,7 @@ jobs:
         env:
           secrets: ${{ toJson(secrets) }}
         with:
-          shell: powershell
+          shell: pwsh
           parentTelemetryScopeJson: ${{ needs.Initialize.outputs.telemetryScopeJson }}
           settingsJson: ${{ env.Settings }}
           secrets: 'adminCenterApiCredentials'
@@ -119,7 +119,7 @@ jobs:
       - name: Create Development Environment
         uses: microsoft/AL-Go-Actions/CreateDevelopmentEnvironment@preview
         with:
-          shell: powershell
+          shell: pwsh
           parentTelemetryScopeJson: ${{ needs.Initialize.outputs.telemetryScopeJson }}
           environmentName: ${{ github.event.inputs.environmentName }}
           reUseExistingEnvironment: ${{ github.event.inputs.reUseExistingEnvironment }}
@@ -130,6 +130,6 @@ jobs:
         if: always()
         uses: microsoft/AL-Go-Actions/WorkflowPostProcess@preview
         with:
-          shell: powershell
+          shell: pwsh
           eventId: "DO0093"
           telemetryScopeJson: ${{ needs.Initialize.outputs.telemetryScopeJson }}

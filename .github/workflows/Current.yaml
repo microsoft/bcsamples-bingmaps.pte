@@ -2,13 +2,15 @@ name: ' Test Current'
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * 1,2,3,4,5'
 
 permissions:
   contents: read
 
 defaults:
   run:
-    shell: powershell
+    shell: pwsh
 
 env:
   workflowDepth: 1
@@ -17,7 +19,7 @@ env:
 
 jobs:
   Initialization:
-    runs-on: [ windows-latest ]
+    runs-on: [ ubuntu-latest ]
     outputs:
       telemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
       settings: ${{ steps.ReadSettings.outputs.SettingsJson }}
@@ -36,21 +38,21 @@ jobs:
         id: init
         uses: microsoft/AL-Go-Actions/WorkflowInitialize@preview
         with:
-          shell: powershell
+          shell: pwsh
           eventId: "DO0101"
 
       - name: Read settings
         id: ReadSettings
         uses: microsoft/AL-Go-Actions/ReadSettings@preview
         with:
-          shell: powershell
+          shell: pwsh
           parentTelemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
           
       - name: Determine Projects To Build
         id: determineProjectsToBuild
         uses: microsoft/AL-Go-Actions/DetermineProjectsToBuild@preview
         with:
-          shell: powershell
+          shell: pwsh
           maxBuildDepth: ${{ env.workflowDepth }}
 
   Build:
@@ -201,7 +203,7 @@ jobs:
 
   PostProcess:
     if: always()
-    runs-on: [ windows-latest ]
+    runs-on: [ ubuntu-latest ]
     needs: [ Initialization, Build ]
     steps:
       - name: Checkout
@@ -211,6 +213,6 @@ jobs:
         id: PostProcess
         uses: microsoft/AL-Go-Actions/WorkflowPostProcess@preview
         with:
-          shell: powershell
+          shell: pwsh
           eventId: "DO0101"
           telemetryScopeJson: ${{ needs.Initialization.outputs.telemetryScopeJson }}

@@ -17,7 +17,7 @@ permissions:
 
 defaults:
   run:
-    shell: powershell
+    shell: pwsh
 
 env:
   ALGoOrgSettings: ${{ vars.ALGoOrgSettings }}
@@ -25,7 +25,7 @@ env:
 
 jobs:
   Initialization:
-    runs-on: [ windows-latest ]
+    runs-on: [ ubuntu-latest ]
     outputs:
       telemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
       settings: ${{ steps.ReadSettings.outputs.SettingsJson }}
@@ -41,14 +41,14 @@ jobs:
         id: init
         uses: microsoft/AL-Go-Actions/WorkflowInitialize@preview
         with:
-          shell: powershell
+          shell: pwsh
           eventId: "DO0097"
 
       - name: Read settings
         id: ReadSettings
         uses: microsoft/AL-Go-Actions/ReadSettings@preview
         with:
-          shell: powershell
+          shell: pwsh
           parentTelemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
           getEnvironments: ${{ github.event.inputs.environmentName }}
           includeProduction: 'Y'
@@ -68,7 +68,7 @@ jobs:
         env:
           secrets: ${{ toJson(secrets) }}
         with:
-          shell: powershell
+          shell: pwsh
           parentTelemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
           settingsJson: ${{ env.Settings }}
           secrets: '${{ steps.envName.outputs.envName }}-AuthContext,${{ steps.envName.outputs.envName }}_AuthContext,AuthContext'
@@ -131,14 +131,14 @@ jobs:
       - name: Read settings
         uses: microsoft/AL-Go-Actions/ReadSettings@preview
         with:
-          shell: powershell
+          shell: pwsh
 
       - name: Read secrets
         uses: microsoft/AL-Go-Actions/ReadSecrets@preview
         env:
           secrets: ${{ toJson(secrets) }}
         with:
-          shell: powershell
+          shell: pwsh
           settingsJson: ${{ env.Settings }}
           secrets: '${{ steps.envName.outputs.envName }}-AuthContext,${{ steps.envName.outputs.envName }}_AuthContext,AuthContext,${{ steps.envName.outputs.envName }}-EnvironmentName,${{ steps.envName.outputs.envName }}_EnvironmentName,EnvironmentName,projects'
 
@@ -221,7 +221,7 @@ jobs:
         env:
           AuthContext: ${{ steps.authContext.outputs.authContext }}
         with:
-          shell: powershell
+          shell: pwsh
           parentTelemetryScopeJson: ${{ needs.Initialization.outputs.telemetryScopeJson }}
           type: 'Publish'
           projects: ${{ steps.authContext.outputs.projects }}
@@ -230,7 +230,7 @@ jobs:
 
   PostProcess:
     if: always()
-    runs-on: [ windows-latest ]
+    runs-on: [ ubuntu-latest ]
     needs: [ Initialization, Deploy ]
     steps:
       - name: Checkout
@@ -240,6 +240,6 @@ jobs:
         id: PostProcess
         uses: microsoft/AL-Go-Actions/WorkflowPostProcess@preview
         with:
-          shell: powershell
+          shell: pwsh
           eventId: "DO0097"
           telemetryScopeJson: ${{ needs.Initialization.outputs.telemetryScopeJson }}
