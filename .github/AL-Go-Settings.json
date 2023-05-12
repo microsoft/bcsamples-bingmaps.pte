@@ -9,5 +9,6 @@
   "shell": "pwsh",
   "githubRunner": "windows-latest",
   "githubRunnerShell": "pwsh",
-  "UpdateDependencies": true
+  "UpdateDependencies": true,
+  "ApplicationDependency": "22.0.0.0"
 }
