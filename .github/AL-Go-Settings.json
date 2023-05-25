@@ -10,6 +10,5 @@
   "githubRunner": "windows-latest",
   "githubRunnerShell": "pwsh",
   "UpdateDependencies": true,
-  "ApplicationDependency": "22.0.0.0",
-  "artifact": "https://bcartifacts.azureedge.net/sandbox/22.0.54157.54644/us"
+  "ApplicationDependency": "21.0.0.0"
 }

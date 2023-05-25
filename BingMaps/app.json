@@ -13,8 +13,8 @@
   "logo": "bingmaps256x240.png",
   "dependencies": [],
   "screenshots": [],
-  "platform": "22.0.0.0",
-  "application": "22.0.0.0",
+  "platform": "21.0.0.0",
+  "application": "21.0.0.0",
   "idRanges": [
     {
       "from": 74119,
