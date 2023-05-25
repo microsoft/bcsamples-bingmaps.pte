@@ -51,7 +51,7 @@
       "to": 70149
     }
   ],
-  "runtime": "11.0",
+  "runtime": "10.0",
   "resourceExposurePolicy": {
     "allowDebugging": true,
     "allowDownloadingSource": true,
