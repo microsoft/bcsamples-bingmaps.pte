@@ -7,5 +7,6 @@
   "testFolders": [
     "BingMaps.Test"
   ],
-  "RepoVersion": "5.1"
+  "RepoVersion": "5.1",
+  "artifact": "https://bcartifacts.azureedge.net/sandbox/22.1.55890.57222/us"
 }
