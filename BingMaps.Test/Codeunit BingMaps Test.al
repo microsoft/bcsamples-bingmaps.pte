@@ -175,7 +175,7 @@ codeunit 70131 "BingMaps Test"
     [SendNotificationHandler]
     procedure RoleCenterBingMapsNotificationHandler(var Notification: Notification): Boolean
     begin
-        RoleCenterNotificationOK := (Notification.ID = 'x3EBC1525-C2D4-4797-8B28-BA2D0C6294B5');
+        RoleCenterNotificationOK := (Notification.ID = '3EBC1525-C2D4-4797-8B28-BA2D0C6294B5');
     end;
 
 
