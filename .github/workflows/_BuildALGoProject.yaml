@@ -92,6 +92,7 @@ jobs:
             parentTelemetryScopeJson: ${{ inputs.parentTelemetryScopeJson }}
             gitHubSecrets: ${{ toJson(secrets) }}
             getSecrets: ${{ inputs.secrets }}
+            getAppDependencyProbingPathsSecrets: 'Y'
 
         - name: Determine ArtifactUrl
           uses: freddydk/AL-Go/Actions/DetermineArtifactUrl@OnlyNeededSecrets
