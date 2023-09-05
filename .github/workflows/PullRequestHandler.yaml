@@ -29,12 +29,7 @@ jobs:
     if: (github.event.pull_request.base.repo.full_name != github.event.pull_request.head.repo.full_name) && (github.event_name != 'pull_request')
     runs-on: [ windows-latest ]
     steps:
-      - uses: actions/checkout@v3
-        with:
-          lfs: true
-          ref: refs/pull/${{ github.event.number }}/merge
-
-      - uses: freddydk/AL-Go/Actions/VerifyPRChanges@ApiVersion
+      - uses: freddydk/AL-Go/Actions/VerifyPRChanges@main
 
   Initialization:
     needs: [ PregateCheck ]
@@ -57,27 +52,25 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@ApiVersion
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@main
         with:
           shell: powershell
           eventId: "DO0104"
 
       - name: Read settings
         id: ReadSettings
-        uses: freddydk/AL-Go/Actions/ReadSettings@ApiVersion
+        uses: freddydk/AL-Go/Actions/ReadSettings@main
         with:
           shell: powershell
-          parentTelemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
-          getEnvironments: '*'
-      
+
       - name: Determine Workflow Depth
         id: DetermineWorkflowDepth
         run: |
           Add-Content -Encoding UTF8 -Path $env:GITHUB_OUTPUT -Value "WorkflowDepth=$($env:workflowDepth)"
-          
+
       - name: Determine Projects To Build
         id: determineProjectsToBuild
-        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@ApiVersion
+        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@main
         with:
           shell: powershell
           maxBuildDepth: ${{ env.workflowDepth }}
@@ -100,24 +93,19 @@ jobs:
       project: ${{ matrix.project }}
       buildMode: ${{ matrix.buildMode }}
       projectDependenciesJson: ${{ needs.Initialization.outputs.projectDependenciesJson }}
-      secrets: 'licenseFileUrl,insiderSasToken,keyVaultCertificateUrl,keyVaultCertificatePassword,keyVaultClientId,gitHubPackagesContext,applicationInsightsConnectionString'
+      secrets: 'licenseFileUrl,insiderSasToken,keyVaultCertificateUrl,*keyVaultCertificatePassword,keyVaultClientId,gitHubPackagesContext,applicationInsightsConnectionString'
       publishThisBuildArtifacts: ${{ needs.Initialization.outputs.workflowDepth > 1 }}
 
-  PostProcess:
+  StatusCheck:
     runs-on: [ windows-latest ]
     needs: [ Initialization, Build ]
     if: (!cancelled())
+    name: Pull Request Status Check
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          lfs: true
-          ref: refs/pull/${{ github.event.number }}/merge
-
-      - name: Finalize the workflow
-        id: PostProcess
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@ApiVersion
+      - name: Pull Request Status Check
+        id: PullRequestStatusCheck
+        uses: freddydk/AL-Go/Actions/PullRequestStatusCheck@main
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         with:
           shell: powershell
-          eventId: "DO0104"
-          telemetryScopeJson: ${{ needs.Initialization.outputs.telemetryScopeJson }}

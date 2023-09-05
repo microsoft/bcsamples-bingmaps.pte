@@ -12,14 +12,14 @@ on:
       name:
         description: Name
         required: true
-        default: '<YourAppName>.PerformanceTest'         
+        default: '<YourAppName>.PerformanceTest'
       publisher:
         description: Publisher
         required: true
       idrange:
         description: ID range
         required: true
-        default: '50000..99999'  
+        default: '50000..99999'
       sampleCode:
         description: Include Sample code (Y/N)
         required: false
@@ -57,49 +57,30 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@ApiVersion
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@main
         with:
           shell: pwsh
           eventId: "DO0102"
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@ApiVersion
-        if: github.event.inputs.useGhTokenWorkflow == 'true'
+        uses: freddydk/AL-Go/Actions/ReadSettings@main
         with:
           shell: pwsh
-          parentTelemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
 
       - name: Read secrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@ApiVersion
-        if: github.event.inputs.useGhTokenWorkflow == 'true'
+        id: ReadSecrets
+        uses: freddydk/AL-Go/Actions/ReadSecrets@main
         with:
           shell: pwsh
-          parentTelemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
           gitHubSecrets: ${{ toJson(secrets) }}
-          getSecrets: 'ghTokenWorkflow'
-
-      - name: CalculateToken
-        id: CalculateToken
-        env:
-          useGhTokenWorkflow: ${{ github.event.inputs.useGhTokenWorkflow }}
-        run: |
-          $ghToken = '${{ secrets.GITHUB_TOKEN }}'
-          if ($env:useGhTokenWorkflow -eq 'true') {
-            $secrets = $env:Secrets | ConvertFrom-Json
-            if ($secrets.GHTOKENWORKFLOW) {
-              $ghToken = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($secrets.GHTOKENWORKFLOW))
-            }
-            else {
-              Write-Host "::Warning::GHTOKENWORKFLOW secret not found. Using GITHUB_TOKEN."
-            }
-          }
-          Add-Content -Encoding UTF8 -Path $env:GITHUB_OUTPUT -Value "ghToken=$ghToken"
+          getSecrets: 'TokenForPush'
+          useGhTokenWorkflowForPush: '${{ github.event.inputs.useGhTokenWorkflow }}'
 
       - name: Creating a new test app
-        uses: freddydk/AL-Go/Actions/CreateApp@ApiVersion
+        uses: freddydk/AL-Go/Actions/CreateApp@main
         with:
           shell: pwsh
-          token: ${{ steps.CalculateToken.outputs.ghToken }}
+          token: ${{ steps.ReadSecrets.outputs.TokenForPush }}
           parentTelemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
           project: ${{ github.event.inputs.project }}
           type: 'Performance Test App'
@@ -112,7 +93,7 @@ jobs:
 
       - name: Finalize the workflow
         if: always()
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@ApiVersion
+        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@main
         with:
           shell: pwsh
           eventId: "DO0102"
