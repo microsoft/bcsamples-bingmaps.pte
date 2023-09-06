@@ -36,14 +36,14 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@main
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@PSScriptAnalyzer
         with:
           shell: pwsh
           eventId: "DO0100"
 
       - name: Read settings
         id: ReadSettings
-        uses: freddydk/AL-Go/Actions/ReadSettings@main
+        uses: freddydk/AL-Go/Actions/ReadSettings@PSScriptAnalyzer
         with:
           shell: pwsh
 
@@ -54,7 +54,7 @@ jobs:
 
       - name: Determine Projects To Build
         id: determineProjectsToBuild
-        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@main
+        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@PSScriptAnalyzer
         with:
           shell: pwsh
           maxBuildDepth: ${{ env.workflowDepth }}
@@ -90,7 +90,7 @@ jobs:
 
       - name: Finalize the workflow
         id: PostProcess
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@main
+        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@PSScriptAnalyzer
         with:
           shell: pwsh
           eventId: "DO0100"

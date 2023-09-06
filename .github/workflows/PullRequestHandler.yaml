@@ -29,7 +29,7 @@ jobs:
     if: (github.event.pull_request.base.repo.full_name != github.event.pull_request.head.repo.full_name) && (github.event_name != 'pull_request')
     runs-on: [ windows-latest ]
     steps:
-      - uses: freddydk/AL-Go/Actions/VerifyPRChanges@main
+      - uses: freddydk/AL-Go/Actions/VerifyPRChanges@PSScriptAnalyzer
 
   Initialization:
     needs: [ PregateCheck ]
@@ -52,14 +52,14 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@main
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@PSScriptAnalyzer
         with:
           shell: powershell
           eventId: "DO0104"
 
       - name: Read settings
         id: ReadSettings
-        uses: freddydk/AL-Go/Actions/ReadSettings@main
+        uses: freddydk/AL-Go/Actions/ReadSettings@PSScriptAnalyzer
         with:
           shell: powershell
 
@@ -70,7 +70,7 @@ jobs:
 
       - name: Determine Projects To Build
         id: determineProjectsToBuild
-        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@main
+        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@PSScriptAnalyzer
         with:
           shell: powershell
           maxBuildDepth: ${{ env.workflowDepth }}
@@ -104,7 +104,7 @@ jobs:
     steps:
       - name: Pull Request Status Check
         id: PullRequestStatusCheck
-        uses: freddydk/AL-Go/Actions/PullRequestStatusCheck@main
+        uses: freddydk/AL-Go/Actions/PullRequestStatusCheck@PSScriptAnalyzer
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
