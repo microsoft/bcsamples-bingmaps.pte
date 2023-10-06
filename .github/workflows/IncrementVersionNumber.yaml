@@ -41,19 +41,19 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@main
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@ALDoc
         with:
           shell: pwsh
           eventId: "DO0096"
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@main
+        uses: freddydk/AL-Go/Actions/ReadSettings@ALDoc
         with:
           shell: pwsh
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@main
+        uses: freddydk/AL-Go/Actions/ReadSecrets@ALDoc
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -61,7 +61,7 @@ jobs:
           useGhTokenWorkflowForPush: '${{ github.event.inputs.useGhTokenWorkflow }}'
 
       - name: Increment Version Number
-        uses: freddydk/AL-Go/Actions/IncrementVersionNumber@main
+        uses: freddydk/AL-Go/Actions/IncrementVersionNumber@ALDoc
         with:
           shell: pwsh
           token: ${{ steps.ReadSecrets.outputs.TokenForPush }}
@@ -72,7 +72,7 @@ jobs:
 
       - name: Finalize the workflow
         if: always()
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@main
+        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@ALDoc
         with:
           shell: pwsh
           eventId: "DO0096"
