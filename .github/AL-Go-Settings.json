@@ -10,5 +10,6 @@
   "githubRunner": "windows-latest",
   "githubRunnerShell": "pwsh",
   "UpdateDependencies": true,
-  "ApplicationDependency": "21.0.0.0"
+  "ApplicationDependency": "21.0.0.0",
+  "deployALDocArtifact": true
 }
