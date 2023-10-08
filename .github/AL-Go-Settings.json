@@ -11,5 +11,7 @@
   "githubRunnerShell": "pwsh",
   "UpdateDependencies": true,
   "ApplicationDependency": "21.0.0.0",
-  "deployALDocArtifact": true
+  "ALDoc": {
+    "ContinuousDeployment": true
+  }
 }
