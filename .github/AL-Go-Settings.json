@@ -12,6 +12,6 @@
   "UpdateDependencies": true,
   "ApplicationDependency": "21.0.0.0",
   "ALDoc": {
-    "ContinuousDeployment": true
+    "ContinuousDeployment": false
   }
 }
