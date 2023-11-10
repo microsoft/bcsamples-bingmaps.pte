@@ -1,0 +1,71 @@
+name: ' Deploy Reference Documentation'
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+  pages: write
+  id-token: write
+
+defaults:
+  run:
+    shell: pwsh
+
+env:
+  ALGoOrgSettings: ${{ vars.ALGoOrgSettings }}
+  ALGoRepoSettings: ${{ vars.ALGoRepoSettings }}
+
+jobs:
+  DeployALDoc:
+    runs-on: [ ubuntu-latest ]
+    name: Deploy Reference Documentation
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Initialize the workflow
+        id: init
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@ALDoc
+        with:
+          shell: pwsh
+          eventId: "DO0097"
+        
+      - name: Read settings
+        uses: freddydk/AL-Go/Actions/ReadSettings@ALDoc
+        with:
+          shell: pwsh
+
+      - name: Determine Deployment Environments
+        id: DetermineDeploymentEnvironments
+        uses: freddydk/AL-Go/Actions/DetermineDeploymentEnvironments@ALDoc
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          shell: pwsh
+          getEnvironments: '-'
+          type: 'Publish'
+            
+      - name: Setup Pages
+        if: steps.DetermineDeploymentEnvironments.outputs.deployALDocArtifact == 1
+        uses: actions/configure-pages@v3
+        
+      - name: Build Reference Documentation
+        uses: freddydk/AL-Go/Actions/BuildALDoc@ALDoc
+        with:
+          shell: pwsh
+          artifacts: 'latest'
+        
+      - name: Upload pages artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: ".aldoc/_site/"
+        
+      - name: Deploy to GitHub Pages
+        if: steps.DetermineDeploymentEnvironments.outputs.deployALDocArtifact == 1
+        id: deployment
+        uses: actions/deploy-pages@v2
