@@ -14,10 +14,8 @@ defaults:
     shell: pwsh
 
 permissions:
-  contents: write
+  contents: read
   actions: read
-  pages: write
-  id-token: write
 
 env:
   workflowDepth: 1
@@ -148,7 +146,7 @@ jobs:
       buildMode: ${{ matrix.buildMode }}
       projectDependenciesJson: ${{ needs.Initialization.outputs.projectDependenciesJson }}
       secrets: 'licenseFileUrl,codeSignCertificateUrl,*codeSignCertificatePassword,keyVaultCertificateUrl,*keyVaultCertificatePassword,keyVaultClientId,gitHubPackagesContext,applicationInsightsConnectionString'
-      publishThisBuildArtifacts: true
+      publishThisBuildArtifacts: ${{ needs.Initialization.outputs.workflowDepth > 1 }}
       publishArtifacts: ${{ github.ref_name == 'main' || startswith(github.ref_name, 'release/') || needs.Initialization.outputs.deliveryTargetsJson != '[]' || needs.Initialization.outputs.environmentCount > 0 }}
       signArtifacts: true
       useArtifactCache: true
@@ -158,6 +156,11 @@ jobs:
     if: always() && needs.Build.result == 'Success' && needs.Initialization.outputs.generateALDocArtifact == 1
     runs-on: windows-latest
     name: Deploy Reference Documentation
+    permissions:
+      contents: write
+      actions: read
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
