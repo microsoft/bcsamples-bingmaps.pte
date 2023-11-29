@@ -13,5 +13,6 @@
   "ApplicationDependency": "21.0.0.0",
   "ALDoc": {
     "ContinuousDeployment": false
-  }
+  },
+  "templateSha": "19e157bc6d8f05360a941f1b92254d8d088c062c"
 }
