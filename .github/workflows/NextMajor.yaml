@@ -19,6 +19,7 @@ env:
 
 jobs:
   Initialization:
+    needs: [ ]
     runs-on: [ ubuntu-latest ]
     outputs:
       telemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
@@ -29,6 +30,11 @@ jobs:
       buildOrderJson: ${{ steps.determineProjectsToBuild.outputs.BuildOrderJson }}
       workflowDepth: ${{ steps.DetermineWorkflowDepth.outputs.WorkflowDepth }}
     steps:
+      - name: Dump Workflow Information
+        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@ALDoc
+        with:
+          shell: pwsh
+
       - name: Checkout
         uses: actions/checkout@v3
         with:
@@ -82,9 +88,9 @@ jobs:
       artifactsNameSuffix: 'NextMajor'
 
   PostProcess:
+    needs: [ Initialization, Build ]
     if: always()
     runs-on: [ ubuntu-latest ]
-    needs: [ Initialization, Build ]
     steps:
       - name: Checkout
         uses: actions/checkout@v3

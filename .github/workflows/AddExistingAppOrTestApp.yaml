@@ -13,12 +13,13 @@ on:
         description: Direct Download Url of .app or .zip file
         required: true
       directCommit:
-        description: Direct COMMIT (Y/N)
-        required: false
-        default: 'N'
-      useGhTokenWorkflow:
-        description: Use GhTokenWorkflow for Pull Request/COMMIT
+        description: Direct Commit?
         type: boolean
+        default: false
+      useGhTokenWorkflow:
+        description: Use GhTokenWorkflow for PR/Commit?
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -34,8 +35,14 @@ env:
 
 jobs:
   AddExistingAppOrTestApp:
+    needs: [ ]
     runs-on: [ ubuntu-latest ]
     steps:
+      - name: Dump Workflow Information
+        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@ALDoc
+        with:
+          shell: pwsh
+
       - name: Checkout
         uses: actions/checkout@v3
 
