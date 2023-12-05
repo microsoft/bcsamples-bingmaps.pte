@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       templateUrl:
-        description: Template Repository URL (current is https://github.com/freddydk/AL-Go@ALDoc)
+        description: Template Repository URL (current is https://github.com/freddydk/AL-Go@bcptreport)
         required: false
         default: ''
       downloadLatest:
@@ -35,7 +35,7 @@ jobs:
     runs-on: [ windows-latest ]
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@ALDoc
+        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@bcptreport
         with:
           shell: powershell
 
@@ -44,20 +44,20 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@ALDoc
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@bcptreport
         with:
           shell: powershell
           eventId: "DO0098"
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@ALDoc
+        uses: freddydk/AL-Go/Actions/ReadSettings@bcptreport
         with:
           shell: powershell
           get: templateUrl
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@ALDoc
+        uses: freddydk/AL-Go/Actions/ReadSecrets@bcptreport
         with:
           shell: powershell
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -93,7 +93,7 @@ jobs:
           Add-Content -Encoding UTF8 -Path $env:GITHUB_ENV -Value "downloadLatest=$downloadLatest"
 
       - name: Update AL-Go system files
-        uses: freddydk/AL-Go/Actions/CheckForUpdates@ALDoc
+        uses: freddydk/AL-Go/Actions/CheckForUpdates@bcptreport
         with:
           shell: powershell
           token: ${{ fromJson(steps.ReadSecrets.outputs.Secrets).ghTokenWorkflow }}
@@ -104,7 +104,7 @@ jobs:
 
       - name: Finalize the workflow
         if: always()
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@ALDoc
+        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@bcptreport
         with:
           shell: powershell
           eventId: "DO0098"

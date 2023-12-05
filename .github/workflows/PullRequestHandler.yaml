@@ -27,7 +27,7 @@ jobs:
     if: (github.event.pull_request.base.repo.full_name != github.event.pull_request.head.repo.full_name) && (github.event_name != 'pull_request')
     runs-on: [ windows-latest ]
     steps:
-      - uses: freddydk/AL-Go/Actions/VerifyPRChanges@ALDoc
+      - uses: freddydk/AL-Go/Actions/VerifyPRChanges@bcptreport
 
   Initialization:
     needs: [ PregateCheck ]
@@ -43,7 +43,7 @@ jobs:
       workflowDepth: ${{ steps.DetermineWorkflowDepth.outputs.WorkflowDepth }}
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@ALDoc
+        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@bcptreport
         with:
           shell: powershell
 
@@ -55,14 +55,14 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@ALDoc
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@bcptreport
         with:
           shell: powershell
           eventId: "DO0104"
 
       - name: Read settings
         id: ReadSettings
-        uses: freddydk/AL-Go/Actions/ReadSettings@ALDoc
+        uses: freddydk/AL-Go/Actions/ReadSettings@bcptreport
         with:
           shell: powershell
 
@@ -73,7 +73,7 @@ jobs:
 
       - name: Determine Projects To Build
         id: determineProjectsToBuild
-        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@ALDoc
+        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@bcptreport
         with:
           shell: powershell
           maxBuildDepth: ${{ env.workflowDepth }}
@@ -109,7 +109,7 @@ jobs:
     steps:
       - name: Pull Request Status Check
         id: PullRequestStatusCheck
-        uses: freddydk/AL-Go/Actions/PullRequestStatusCheck@ALDoc
+        uses: freddydk/AL-Go/Actions/PullRequestStatusCheck@bcptreport
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
