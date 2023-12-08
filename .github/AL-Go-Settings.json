@@ -1,6 +1,6 @@
 {
   "type": "PTE",
-  "templateUrl": "https://github.com/freddydk/AL-Go@bcptreport",
+  "templateUrl": "https://github.com/mazhelez/AL-Go@fix-incremental-build",
   "currentSchedule": "0 2 * * 1,2,3,4,5",
   "NextMinorSchedule": "0 2 * * 6",
   "NextMajorSchedule": "0 2 * * 0",
@@ -14,5 +14,5 @@
   "ALDoc": {
     "ContinuousDeployment": false
   },
-  "templateSha": "9e978a341a18b25044c40e48cccbc44873b759fb"
+  "templateSha": "0ba00b8d1a6d916fcdfcb36b0c0736927e780b25"
 }

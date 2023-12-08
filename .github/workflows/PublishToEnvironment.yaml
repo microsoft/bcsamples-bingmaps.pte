@@ -35,7 +35,7 @@ jobs:
       deviceCode: ${{ steps.Authenticate.outputs.deviceCode }}
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@bcptreport
+        uses: mazhelez/AL-Go/Actions/DumpWorkflowInfo@fix-incremental-build
         with:
           shell: pwsh
 
@@ -44,20 +44,20 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@bcptreport
+        uses: mazhelez/AL-Go/Actions/WorkflowInitialize@fix-incremental-build
         with:
           shell: pwsh
           eventId: "DO0097"
 
       - name: Read settings
         id: ReadSettings
-        uses: freddydk/AL-Go/Actions/ReadSettings@bcptreport
+        uses: mazhelez/AL-Go/Actions/ReadSettings@fix-incremental-build
         with:
           shell: pwsh
 
       - name: Determine Deployment Environments
         id: DetermineDeploymentEnvironments
-        uses: freddydk/AL-Go/Actions/DetermineDeploymentEnvironments@bcptreport
+        uses: mazhelez/AL-Go/Actions/DetermineDeploymentEnvironments@fix-incremental-build
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
@@ -75,7 +75,7 @@ jobs:
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@bcptreport
+        uses: mazhelez/AL-Go/Actions/ReadSecrets@fix-incremental-build
         if: steps.DetermineDeploymentEnvironments.outputs.UnknownEnvironment == 1
         with:
           shell: pwsh
@@ -101,17 +101,17 @@ jobs:
           }
           if ($authContext) {
             Write-Host "AuthContext provided in secret $secretName!"
-            Add-Content -Encoding UTF8 -path $ENV:GITHUB_STEP_SUMMARY -value "AuthContext was provided in a secret called $secretName. Using this information for authentication."
+            Set-Content -Path $ENV:GITHUB_STEP_SUMMARY -value "AuthContext was provided in a secret called $secretName. Using this information for authentication."
           }
           else {
             Write-Host "No AuthContext provided for $envName, initiating Device Code flow"
             $ALGoHelperPath = "$([System.IO.Path]::GetTempFileName()).ps1"
             $webClient = New-Object System.Net.WebClient
-            $webClient.DownloadFile('https://raw.githubusercontent.com/freddydk/AL-Go/bcptreport/Actions/AL-Go-Helper.ps1', $ALGoHelperPath)
+            $webClient.DownloadFile('https://raw.githubusercontent.com/mazhelez/AL-Go/fix-incremental-build/Actions/AL-Go-Helper.ps1', $ALGoHelperPath)
             . $ALGoHelperPath
             DownloadAndImportBcContainerHelper
             $authContext = New-BcAuthContext -includeDeviceLogin -deviceLoginTimeout ([TimeSpan]::FromSeconds(0))
-            Add-Content -Encoding UTF8 -path $ENV:GITHUB_STEP_SUMMARY -value "AL-Go needs access to the Business Central Environment $('${{ steps.envName.outputs.envName }}'.Split(' ')[0]) and could not locate a secret called ${{ steps.envName.outputs.envName }}_AuthContext`n`n$($authContext.message)"
+            Set-Content -Path $ENV:GITHUB_STEP_SUMMARY -value "AL-Go needs access to the Business Central Environment $('${{ steps.envName.outputs.envName }}'.Split(' ')[0]) and could not locate a secret called ${{ steps.envName.outputs.envName }}_AuthContext`n`n$($authContext.message)"
             Add-Content -Encoding UTF8 -Path $env:GITHUB_OUTPUT -Value "deviceCode=$($authContext.deviceCode)"
           }
 
@@ -138,13 +138,13 @@ jobs:
           Add-Content -Encoding UTF8 -Path $env:GITHUB_OUTPUT -Value "envName=$envName"
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@bcptreport
+        uses: mazhelez/AL-Go/Actions/ReadSettings@fix-incremental-build
         with:
           shell: pwsh
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@bcptreport
+        uses: mazhelez/AL-Go/Actions/ReadSecrets@fix-incremental-build
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -152,7 +152,7 @@ jobs:
 
       - name: Deploy
         id: Deploy
-        uses: freddydk/AL-Go/Actions/Deploy@bcptreport
+        uses: mazhelez/AL-Go/Actions/Deploy@fix-incremental-build
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
@@ -172,7 +172,7 @@ jobs:
 
       - name: Finalize the workflow
         id: PostProcess
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@bcptreport
+        uses: mazhelez/AL-Go/Actions/WorkflowPostProcess@fix-incremental-build
         with:
           shell: pwsh
           eventId: "DO0097"

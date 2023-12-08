@@ -30,19 +30,19 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@bcptreport
+        uses: mazhelez/AL-Go/Actions/WorkflowInitialize@fix-incremental-build
         with:
           shell: pwsh
           eventId: "DO0097"
         
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@bcptreport
+        uses: mazhelez/AL-Go/Actions/ReadSettings@fix-incremental-build
         with:
           shell: pwsh
 
       - name: Determine Deployment Environments
         id: DetermineDeploymentEnvironments
-        uses: freddydk/AL-Go/Actions/DetermineDeploymentEnvironments@bcptreport
+        uses: mazhelez/AL-Go/Actions/DetermineDeploymentEnvironments@fix-incremental-build
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
@@ -55,7 +55,7 @@ jobs:
         uses: actions/configure-pages@v3
         
       - name: Build Reference Documentation
-        uses: freddydk/AL-Go/Actions/BuildReferenceDocumentation@bcptreport
+        uses: mazhelez/AL-Go/Actions/BuildReferenceDocumentation@fix-incremental-build
         with:
           shell: pwsh
           artifacts: 'latest'

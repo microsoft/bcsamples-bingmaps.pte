@@ -27,7 +27,7 @@ jobs:
     if: (github.event.pull_request.base.repo.full_name != github.event.pull_request.head.repo.full_name) && (github.event_name != 'pull_request')
     runs-on: [ windows-latest ]
     steps:
-      - uses: freddydk/AL-Go/Actions/VerifyPRChanges@bcptreport
+      - uses: mazhelez/AL-Go/Actions/VerifyPRChanges@fix-incremental-build
 
   Initialization:
     needs: [ PregateCheck ]
@@ -41,9 +41,10 @@ jobs:
       projectDependenciesJson: ${{ steps.determineProjectsToBuild.outputs.ProjectDependenciesJson }}
       buildOrderJson: ${{ steps.determineProjectsToBuild.outputs.BuildOrderJson }}
       workflowDepth: ${{ steps.DetermineWorkflowDepth.outputs.WorkflowDepth }}
+      baselineWorkflowRunId: ${{ steps.DetermineBaselineWorkflowRun.outputs.BaselineWorkflowRunId }}
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@bcptreport
+        uses: mazhelez/AL-Go/Actions/DumpWorkflowInfo@fix-incremental-build
         with:
           shell: powershell
 
@@ -55,14 +56,14 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@bcptreport
+        uses: mazhelez/AL-Go/Actions/WorkflowInitialize@fix-incremental-build
         with:
           shell: powershell
           eventId: "DO0104"
 
       - name: Read settings
         id: ReadSettings
-        uses: freddydk/AL-Go/Actions/ReadSettings@bcptreport
+        uses: mazhelez/AL-Go/Actions/ReadSettings@fix-incremental-build
         with:
           shell: powershell
 
@@ -73,10 +74,17 @@ jobs:
 
       - name: Determine Projects To Build
         id: determineProjectsToBuild
-        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@bcptreport
+        uses: mazhelez/AL-Go/Actions/DetermineProjectsToBuild@fix-incremental-build
         with:
           shell: powershell
           maxBuildDepth: ${{ env.workflowDepth }}
+
+      - name: Determine Baseline Workflow Run
+        id: DetermineBaselineWorkflowRun
+        if: ${{ fromJson(steps.determineProjectsToBuild.outputs.IsPartialBuild) }}
+        uses: mazhelez/AL-Go/Actions/DetermineBaselineWorkflowRun@fix-incremental-build
+        with:
+          shell: powershell
 
   Build:
     needs: [ Initialization ]
@@ -97,6 +105,7 @@ jobs:
       projectName: ${{ matrix.projectName }}
       buildMode: ${{ matrix.buildMode }}
       projectDependenciesJson: ${{ needs.Initialization.outputs.projectDependenciesJson }}
+      baselineWorkflowRunId: '${{ needs.Initialization.outputs.baselineWorkflowRunId }}'
       secrets: 'licenseFileUrl,keyVaultCertificateUrl,*keyVaultCertificatePassword,keyVaultClientId,gitHubPackagesContext,applicationInsightsConnectionString'
       publishThisBuildArtifacts: ${{ needs.Initialization.outputs.workflowDepth > 1 }}
       artifactsNameSuffix: 'PR${{ github.event.number }}'
@@ -109,7 +118,7 @@ jobs:
     steps:
       - name: Pull Request Status Check
         id: PullRequestStatusCheck
-        uses: freddydk/AL-Go/Actions/PullRequestStatusCheck@bcptreport
+        uses: mazhelez/AL-Go/Actions/PullRequestStatusCheck@fix-incremental-build
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:

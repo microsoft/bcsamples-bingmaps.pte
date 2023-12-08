@@ -42,7 +42,7 @@ jobs:
       workflowDepth: ${{ steps.DetermineWorkflowDepth.outputs.WorkflowDepth }}
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@bcptreport
+        uses: mazhelez/AL-Go/Actions/DumpWorkflowInfo@fix-incremental-build
         with:
           shell: pwsh
 
@@ -53,14 +53,14 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@bcptreport
+        uses: mazhelez/AL-Go/Actions/WorkflowInitialize@fix-incremental-build
         with:
           shell: pwsh
           eventId: "DO0091"
 
       - name: Read settings
         id: ReadSettings
-        uses: freddydk/AL-Go/Actions/ReadSettings@bcptreport
+        uses: mazhelez/AL-Go/Actions/ReadSettings@fix-incremental-build
         with:
           shell: pwsh
           get: type
@@ -72,14 +72,14 @@ jobs:
 
       - name: Determine Projects To Build
         id: determineProjectsToBuild
-        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@bcptreport
+        uses: mazhelez/AL-Go/Actions/DetermineProjectsToBuild@fix-incremental-build
         with:
           shell: pwsh
           maxBuildDepth: ${{ env.workflowDepth }}
 
       - name: Determine Delivery Target Secrets
         id: DetermineDeliveryTargetSecrets
-        uses: freddydk/AL-Go/Actions/DetermineDeliveryTargets@bcptreport
+        uses: mazhelez/AL-Go/Actions/DetermineDeliveryTargets@fix-incremental-build
         with:
           shell: pwsh
           projectsJson: '${{ steps.determineProjectsToBuild.outputs.ProjectsJson }}'
@@ -87,7 +87,7 @@ jobs:
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@bcptreport
+        uses: mazhelez/AL-Go/Actions/ReadSecrets@fix-incremental-build
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -95,7 +95,7 @@ jobs:
 
       - name: Determine Delivery Targets
         id: DetermineDeliveryTargets
-        uses: freddydk/AL-Go/Actions/DetermineDeliveryTargets@bcptreport
+        uses: mazhelez/AL-Go/Actions/DetermineDeliveryTargets@fix-incremental-build
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
@@ -105,7 +105,7 @@ jobs:
 
       - name: Determine Deployment Environments
         id: DetermineDeploymentEnvironments
-        uses: freddydk/AL-Go/Actions/DetermineDeploymentEnvironments@bcptreport
+        uses: mazhelez/AL-Go/Actions/DetermineDeploymentEnvironments@fix-incremental-build
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
@@ -121,13 +121,13 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@bcptreport
+        uses: mazhelez/AL-Go/Actions/ReadSettings@fix-incremental-build
         with:
           shell: pwsh
           get: templateUrl
 
       - name: Check for updates to AL-Go system files
-        uses: freddydk/AL-Go/Actions/CheckForUpdates@bcptreport
+        uses: mazhelez/AL-Go/Actions/CheckForUpdates@fix-incremental-build
         with:
           shell: pwsh
           templateUrl: ${{ env.templateUrl }}
@@ -180,7 +180,7 @@ jobs:
           path: '.artifacts'
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@bcptreport
+        uses: mazhelez/AL-Go/Actions/ReadSettings@fix-incremental-build
         with:
           shell: pwsh
 
@@ -189,7 +189,7 @@ jobs:
         uses: actions/configure-pages@v3
 
       - name: Build Reference Documentation
-        uses: freddydk/AL-Go/Actions/BuildReferenceDocumentation@bcptreport
+        uses: mazhelez/AL-Go/Actions/BuildReferenceDocumentation@fix-incremental-build
         with:
           shell: pwsh
           artifacts: '.artifacts'
@@ -223,7 +223,7 @@ jobs:
           path: '.artifacts'
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@bcptreport
+        uses: mazhelez/AL-Go/Actions/ReadSettings@fix-incremental-build
         with:
           shell: pwsh
 
@@ -236,7 +236,7 @@ jobs:
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@bcptreport
+        uses: mazhelez/AL-Go/Actions/ReadSecrets@fix-incremental-build
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -244,7 +244,7 @@ jobs:
 
       - name: Deploy
         id: Deploy
-        uses: freddydk/AL-Go/Actions/Deploy@bcptreport
+        uses: mazhelez/AL-Go/Actions/Deploy@fix-incremental-build
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
@@ -273,20 +273,20 @@ jobs:
           path: '.artifacts'
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@bcptreport
+        uses: mazhelez/AL-Go/Actions/ReadSettings@fix-incremental-build
         with:
           shell: pwsh
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@bcptreport
+        uses: mazhelez/AL-Go/Actions/ReadSecrets@fix-incremental-build
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
           getSecrets: '${{ matrix.deliveryTarget }}Context'
 
       - name: Deliver
-        uses: freddydk/AL-Go/Actions/Deliver@bcptreport
+        uses: mazhelez/AL-Go/Actions/Deliver@fix-incremental-build
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
@@ -306,7 +306,7 @@ jobs:
 
       - name: Finalize the workflow
         id: PostProcess
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@bcptreport
+        uses: mazhelez/AL-Go/Actions/WorkflowPostProcess@fix-incremental-build
         with:
           shell: pwsh
           eventId: "DO0091"
