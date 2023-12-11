@@ -39,7 +39,7 @@ jobs:
     runs-on: [ ubuntu-latest ]
     steps:
       - name: Dump Workflow Information
-        uses: mazhelez/AL-Go/Actions/DumpWorkflowInfo@fix-incremental-build
+        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@bcptreport
         with:
           shell: pwsh
 
@@ -48,19 +48,19 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: mazhelez/AL-Go/Actions/WorkflowInitialize@fix-incremental-build
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@bcptreport
         with:
           shell: pwsh
           eventId: "DO0096"
 
       - name: Read settings
-        uses: mazhelez/AL-Go/Actions/ReadSettings@fix-incremental-build
+        uses: freddydk/AL-Go/Actions/ReadSettings@bcptreport
         with:
           shell: pwsh
 
       - name: Read secrets
         id: ReadSecrets
-        uses: mazhelez/AL-Go/Actions/ReadSecrets@fix-incremental-build
+        uses: freddydk/AL-Go/Actions/ReadSecrets@bcptreport
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -68,7 +68,7 @@ jobs:
           useGhTokenWorkflowForPush: '${{ github.event.inputs.useGhTokenWorkflow }}'
 
       - name: Increment Version Number
-        uses: mazhelez/AL-Go/Actions/IncrementVersionNumber@fix-incremental-build
+        uses: freddydk/AL-Go/Actions/IncrementVersionNumber@bcptreport
         with:
           shell: pwsh
           token: ${{ steps.ReadSecrets.outputs.TokenForPush }}
@@ -79,7 +79,7 @@ jobs:
 
       - name: Finalize the workflow
         if: always()
-        uses: mazhelez/AL-Go/Actions/WorkflowPostProcess@fix-incremental-build
+        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@bcptreport
         with:
           shell: pwsh
           eventId: "DO0096"

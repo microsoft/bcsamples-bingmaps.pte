@@ -30,7 +30,7 @@ jobs:
           lfs: true
 
       - name: Troubleshooting
-        uses: mazhelez/AL-Go/Actions/Troubleshooting@fix-incremental-build
+        uses: freddydk/AL-Go/Actions/Troubleshooting@bcptreport
         with:
           shell: powershell
           gitHubSecrets: ${{ toJson(secrets) }}

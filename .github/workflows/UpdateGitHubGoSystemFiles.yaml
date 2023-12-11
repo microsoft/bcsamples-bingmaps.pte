@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       templateUrl:
-        description: Template Repository URL (current is https://github.com/mazhelez/AL-Go@fix-incremental-build)
+        description: Template Repository URL (current is https://github.com/freddydk/AL-Go@bcptreport)
         required: false
         default: ''
       downloadLatest:
@@ -35,7 +35,7 @@ jobs:
     runs-on: [ windows-latest ]
     steps:
       - name: Dump Workflow Information
-        uses: mazhelez/AL-Go/Actions/DumpWorkflowInfo@fix-incremental-build
+        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@bcptreport
         with:
           shell: powershell
 
@@ -44,20 +44,20 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: mazhelez/AL-Go/Actions/WorkflowInitialize@fix-incremental-build
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@bcptreport
         with:
           shell: powershell
           eventId: "DO0098"
 
       - name: Read settings
-        uses: mazhelez/AL-Go/Actions/ReadSettings@fix-incremental-build
+        uses: freddydk/AL-Go/Actions/ReadSettings@bcptreport
         with:
           shell: powershell
           get: templateUrl
 
       - name: Read secrets
         id: ReadSecrets
-        uses: mazhelez/AL-Go/Actions/ReadSecrets@fix-incremental-build
+        uses: freddydk/AL-Go/Actions/ReadSecrets@bcptreport
         with:
           shell: powershell
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -93,7 +93,7 @@ jobs:
           Add-Content -Encoding UTF8 -Path $env:GITHUB_ENV -Value "downloadLatest=$downloadLatest"
 
       - name: Update AL-Go system files
-        uses: mazhelez/AL-Go/Actions/CheckForUpdates@fix-incremental-build
+        uses: freddydk/AL-Go/Actions/CheckForUpdates@bcptreport
         with:
           shell: powershell
           token: ${{ fromJson(steps.ReadSecrets.outputs.Secrets).ghTokenWorkflow }}
@@ -104,7 +104,7 @@ jobs:
 
       - name: Finalize the workflow
         if: always()
-        uses: mazhelez/AL-Go/Actions/WorkflowPostProcess@fix-incremental-build
+        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@bcptreport
         with:
           shell: powershell
           eventId: "DO0098"
