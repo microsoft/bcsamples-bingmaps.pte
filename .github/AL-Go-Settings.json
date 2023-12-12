@@ -1,6 +1,6 @@
 {
   "type": "PTE",
-  "templateUrl": "https://github.com/freddydk/AL-Go@bcptreport",
+  "templateUrl": "https://github.com/mazhelez/AL-Go@fix-GetArtifacts-take2",
   "currentSchedule": "0 2 * * 1,2,3,4,5",
   "NextMinorSchedule": "0 2 * * 6",
   "NextMajorSchedule": "0 2 * * 0",
@@ -14,5 +14,5 @@
   "ALDoc": {
     "ContinuousDeployment": false
   },
-  "templateSha": "6fb8db5e92506f3ae32434b42d1969f4d1d4facc"
+  "templateSha": "13356d47d11db6f04215ffc8717faed4207a2180"
 }
