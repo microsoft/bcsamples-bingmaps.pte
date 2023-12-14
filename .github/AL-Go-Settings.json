@@ -12,7 +12,7 @@
   "UpdateDependencies": true,
   "ApplicationDependency": "21.0.0.0",
   "ALDoc": {
-    "ContinuousDeployment": false
+    "ContinuousDeployment": true
   },
   "templateSha": "08afe3fdeb5b141d1fbeb9d2af3c611fd2c7d51b"
 }
