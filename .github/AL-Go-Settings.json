@@ -1,6 +1,6 @@
 {
   "type": "PTE",
-  "templateUrl": "https://github.com/freddydk/AL-Go@bcptreport",
+  "templateUrl": "https://github.com/freddydk/AL-Go@nuget",
   "currentSchedule": "0 2 * * 1,2,3,4,5",
   "NextMinorSchedule": "0 2 * * 6",
   "NextMajorSchedule": "0 2 * * 0",
@@ -14,5 +14,5 @@
   "ALDoc": {
     "ContinuousDeployment": true
   },
-  "templateSha": "c951150d2fae37a324353656c4a0df7bf59bfde9"
+  "templateSha": "679d5cf17e51b1cd558453f429df6e59bf2ce95c"
 }
