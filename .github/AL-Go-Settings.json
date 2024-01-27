@@ -14,5 +14,6 @@
   "ALDoc": {
     "ContinuousDeployment": true
   },
-  "templateSha": "32b6eb33271eeec45ea8b3b238a67762a63ccbff"
+  "templateSha": "32b6eb33271eeec45ea8b3b238a67762a63ccbff",
+  "ArtifactsFeedOrganizationAndProject": "dynamicssmb2/DynamicsBCPublicFeeds"
 }
