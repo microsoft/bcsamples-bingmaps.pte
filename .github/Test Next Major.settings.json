@@ -1,5 +1,5 @@
 {
-  "artifact": "bcinsider/sandbox/24.0.16534.0/latest",
+  "artifact": "https://bcinsider.blob.core.windows.net/sandbox/24.0.16534.0/us",
   "cacheImageName": "",
   "versioningStrategy": 15
 }
