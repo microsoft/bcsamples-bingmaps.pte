@@ -1,5 +1,5 @@
 {
-  "artifact": "https://bcinsider.blob.core.windows.net/sandbox/24.0.16534.0/us",
+  "artifact": "////nextmajor/{INSIDERSASTOKEN}",
   "cacheImageName": "",
   "versioningStrategy": 15
 }
