@@ -12,7 +12,7 @@
   "contextSensitiveHelpUrl": "https://dev.azure.com/businesscentralapps/BingMaps.PTE",
   "logo": "bingmaps256x240.png",
   "dependencies": [],
-  "screenshots": ["1.png","2.png"],
+  "screenshots": ["1.jpg","2.jpg","3.jpg"],
   "platform": "21.0.0.0",
   "application": "21.0.0.0",
   "idRanges": [
