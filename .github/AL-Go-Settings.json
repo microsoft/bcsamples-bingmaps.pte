@@ -15,5 +15,5 @@
     "ContinuousDeployment": true
   },
   "usePwshForBC24": false,
-  "templateSha": "c88646e3fcfda3483c0bad63fb3c338fa625180b"
+  "templateSha": "54ba405e03259c985c78161de272d84986dccc99"
 }
