@@ -27,7 +27,7 @@ jobs:
     if: (github.event.pull_request.base.repo.full_name != github.event.pull_request.head.repo.full_name) && (github.event_name != 'pull_request')
     runs-on: [ windows-latest ]
     steps:
-      - uses: freddydk/AL-Go/Actions/VerifyPRChanges@PPP
+      - uses: microsoft/AL-Go/Actions/VerifyPRChanges@e9f4cc63d149d341172cebfc8112e825123683d8
 
   Initialization:
     needs: [ PregateCheck ]
@@ -44,7 +44,7 @@ jobs:
       workflowDepth: ${{ steps.DetermineWorkflowDepth.outputs.WorkflowDepth }}
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@PPP
+        uses: microsoft/AL-Go/Actions/DumpWorkflowInfo@e9f4cc63d149d341172cebfc8112e825123683d8
         with:
           shell: powershell
 
@@ -56,14 +56,14 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@PPP
+        uses: microsoft/AL-Go/Actions/WorkflowInitialize@e9f4cc63d149d341172cebfc8112e825123683d8
         with:
           shell: powershell
           eventId: "DO0104"
 
       - name: Read settings
         id: ReadSettings
-        uses: freddydk/AL-Go/Actions/ReadSettings@PPP
+        uses: microsoft/AL-Go/Actions/ReadSettings@e9f4cc63d149d341172cebfc8112e825123683d8
         with:
           shell: powershell
 
@@ -74,7 +74,7 @@ jobs:
 
       - name: Determine Projects To Build
         id: determineProjectsToBuild
-        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@PPP
+        uses: microsoft/AL-Go/Actions/DetermineProjectsToBuild@e9f4cc63d149d341172cebfc8112e825123683d8
         with:
           shell: powershell
           maxBuildDepth: ${{ env.workflowDepth }}
@@ -111,7 +111,7 @@ jobs:
     steps:
       - name: Pull Request Status Check
         id: PullRequestStatusCheck
-        uses: freddydk/AL-Go/Actions/PullRequestStatusCheck@PPP
+        uses: microsoft/AL-Go/Actions/PullRequestStatusCheck@e9f4cc63d149d341172cebfc8112e825123683d8
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:

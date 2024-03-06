@@ -39,7 +39,7 @@ jobs:
     runs-on: [ ubuntu-latest ]
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@PPP
+        uses: microsoft/AL-Go/Actions/DumpWorkflowInfo@e9f4cc63d149d341172cebfc8112e825123683d8
         with:
           shell: pwsh
 
@@ -48,19 +48,19 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@PPP
+        uses: microsoft/AL-Go/Actions/WorkflowInitialize@e9f4cc63d149d341172cebfc8112e825123683d8
         with:
           shell: pwsh
           eventId: "DO0096"
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@PPP
+        uses: microsoft/AL-Go/Actions/ReadSettings@e9f4cc63d149d341172cebfc8112e825123683d8
         with:
           shell: pwsh
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@PPP
+        uses: microsoft/AL-Go/Actions/ReadSecrets@e9f4cc63d149d341172cebfc8112e825123683d8
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -68,7 +68,7 @@ jobs:
           useGhTokenWorkflowForPush: '${{ github.event.inputs.useGhTokenWorkflow }}'
 
       - name: Increment Version Number
-        uses: freddydk/AL-Go/Actions/IncrementVersionNumber@PPP
+        uses: microsoft/AL-Go/Actions/IncrementVersionNumber@e9f4cc63d149d341172cebfc8112e825123683d8
         with:
           shell: pwsh
           token: ${{ steps.ReadSecrets.outputs.TokenForPush }}
@@ -79,7 +79,7 @@ jobs:
 
       - name: Finalize the workflow
         if: always()
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@PPP
+        uses: microsoft/AL-Go/Actions/WorkflowPostProcess@e9f4cc63d149d341172cebfc8112e825123683d8
         with:
           shell: pwsh
           eventId: "DO0096"
