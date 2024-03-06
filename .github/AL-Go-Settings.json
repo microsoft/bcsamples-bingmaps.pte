@@ -14,6 +14,6 @@
   "ALDoc": {
     "ContinuousDeployment": true
   },
-  "usePwshForBC24": false,
+  "usePwshForBC24": true,
   "templateSha": "54ba405e03259c985c78161de272d84986dccc99"
 }
