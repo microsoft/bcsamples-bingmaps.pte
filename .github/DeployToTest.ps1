@@ -20,7 +20,7 @@ $tempPath = Join-Path ([System.IO.Path]::GetTempPath()) ([GUID]::NewGuid().ToStr
 New-Item -ItemType Directory -Path $tempPath | Out-Null
 
 Copy-AppFilesToFolder -appFiles $parameters.apps -folder $tempPath | Out-Null
-$appsList = Get-ChildItem -Path $tempPath -Filter *.app
+$appsList = @(Get-ChildItem -Path $tempPath -Filter *.app)
 if (-not $appsList -or $appsList.Count -eq 0) {
     Write-Host "::error::No apps to publish found."
     exit 1
