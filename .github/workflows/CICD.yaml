@@ -43,7 +43,7 @@ jobs:
       workflowDepth: ${{ steps.DetermineWorkflowDepth.outputs.WorkflowDepth }}
     steps:
       - name: Dump Workflow Information
-        uses: microsoft/AL-Go/Actions/DumpWorkflowInfo@3275712f682a1301dca1ff9c3d9abb5c7d2e6840
+        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@issue1018
         with:
           shell: pwsh
 
@@ -54,14 +54,14 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: microsoft/AL-Go/Actions/WorkflowInitialize@3275712f682a1301dca1ff9c3d9abb5c7d2e6840
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@issue1018
         with:
           shell: pwsh
           eventId: "DO0091"
 
       - name: Read settings
         id: ReadSettings
-        uses: microsoft/AL-Go/Actions/ReadSettings@3275712f682a1301dca1ff9c3d9abb5c7d2e6840
+        uses: freddydk/AL-Go/Actions/ReadSettings@issue1018
         with:
           shell: pwsh
           get: type
@@ -73,14 +73,14 @@ jobs:
 
       - name: Determine Projects To Build
         id: determineProjectsToBuild
-        uses: microsoft/AL-Go/Actions/DetermineProjectsToBuild@3275712f682a1301dca1ff9c3d9abb5c7d2e6840
+        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@issue1018
         with:
           shell: pwsh
           maxBuildDepth: ${{ env.workflowDepth }}
 
       - name: Determine Delivery Target Secrets
         id: DetermineDeliveryTargetSecrets
-        uses: microsoft/AL-Go/Actions/DetermineDeliveryTargets@3275712f682a1301dca1ff9c3d9abb5c7d2e6840
+        uses: freddydk/AL-Go/Actions/DetermineDeliveryTargets@issue1018
         with:
           shell: pwsh
           projectsJson: '${{ steps.determineProjectsToBuild.outputs.ProjectsJson }}'
@@ -88,7 +88,7 @@ jobs:
 
       - name: Read secrets
         id: ReadSecrets
-        uses: microsoft/AL-Go/Actions/ReadSecrets@3275712f682a1301dca1ff9c3d9abb5c7d2e6840
+        uses: freddydk/AL-Go/Actions/ReadSecrets@issue1018
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -96,7 +96,7 @@ jobs:
 
       - name: Determine Delivery Targets
         id: DetermineDeliveryTargets
-        uses: microsoft/AL-Go/Actions/DetermineDeliveryTargets@3275712f682a1301dca1ff9c3d9abb5c7d2e6840
+        uses: freddydk/AL-Go/Actions/DetermineDeliveryTargets@issue1018
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
@@ -106,7 +106,7 @@ jobs:
 
       - name: Determine Deployment Environments
         id: DetermineDeploymentEnvironments
-        uses: microsoft/AL-Go/Actions/DetermineDeploymentEnvironments@3275712f682a1301dca1ff9c3d9abb5c7d2e6840
+        uses: freddydk/AL-Go/Actions/DetermineDeploymentEnvironments@issue1018
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
@@ -122,13 +122,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Read settings
-        uses: microsoft/AL-Go/Actions/ReadSettings@3275712f682a1301dca1ff9c3d9abb5c7d2e6840
+        uses: freddydk/AL-Go/Actions/ReadSettings@issue1018
         with:
           shell: pwsh
           get: templateUrl
 
       - name: Check for updates to AL-Go system files
-        uses: microsoft/AL-Go/Actions/CheckForUpdates@3275712f682a1301dca1ff9c3d9abb5c7d2e6840
+        uses: freddydk/AL-Go/Actions/CheckForUpdates@issue1018
         with:
           shell: pwsh
           templateUrl: ${{ env.templateUrl }}
@@ -181,7 +181,7 @@ jobs:
           path: '.artifacts'
 
       - name: Read settings
-        uses: microsoft/AL-Go/Actions/ReadSettings@3275712f682a1301dca1ff9c3d9abb5c7d2e6840
+        uses: freddydk/AL-Go/Actions/ReadSettings@issue1018
         with:
           shell: pwsh
 
@@ -190,7 +190,7 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Build Reference Documentation
-        uses: microsoft/AL-Go/Actions/BuildReferenceDocumentation@3275712f682a1301dca1ff9c3d9abb5c7d2e6840
+        uses: freddydk/AL-Go/Actions/BuildReferenceDocumentation@issue1018
         with:
           shell: pwsh
           artifacts: '.artifacts'
@@ -224,7 +224,7 @@ jobs:
           path: '.artifacts'
 
       - name: Read settings
-        uses: microsoft/AL-Go/Actions/ReadSettings@3275712f682a1301dca1ff9c3d9abb5c7d2e6840
+        uses: freddydk/AL-Go/Actions/ReadSettings@issue1018
         with:
           shell: pwsh
 
@@ -237,7 +237,7 @@ jobs:
 
       - name: Read secrets
         id: ReadSecrets
-        uses: microsoft/AL-Go/Actions/ReadSecrets@3275712f682a1301dca1ff9c3d9abb5c7d2e6840
+        uses: freddydk/AL-Go/Actions/ReadSecrets@issue1018
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -245,7 +245,7 @@ jobs:
 
       - name: Deploy
         id: Deploy
-        uses: microsoft/AL-Go/Actions/Deploy@3275712f682a1301dca1ff9c3d9abb5c7d2e6840
+        uses: freddydk/AL-Go/Actions/Deploy@issue1018
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
@@ -274,20 +274,20 @@ jobs:
           path: '.artifacts'
 
       - name: Read settings
-        uses: microsoft/AL-Go/Actions/ReadSettings@3275712f682a1301dca1ff9c3d9abb5c7d2e6840
+        uses: freddydk/AL-Go/Actions/ReadSettings@issue1018
         with:
           shell: pwsh
 
       - name: Read secrets
         id: ReadSecrets
-        uses: microsoft/AL-Go/Actions/ReadSecrets@3275712f682a1301dca1ff9c3d9abb5c7d2e6840
+        uses: freddydk/AL-Go/Actions/ReadSecrets@issue1018
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
           getSecrets: '${{ matrix.deliveryTarget }}Context'
 
       - name: Deliver
-        uses: microsoft/AL-Go/Actions/Deliver@3275712f682a1301dca1ff9c3d9abb5c7d2e6840
+        uses: freddydk/AL-Go/Actions/Deliver@issue1018
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
@@ -307,7 +307,7 @@ jobs:
 
       - name: Finalize the workflow
         id: PostProcess
-        uses: microsoft/AL-Go/Actions/WorkflowPostProcess@3275712f682a1301dca1ff9c3d9abb5c7d2e6840
+        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@issue1018
         with:
           shell: pwsh
           eventId: "DO0091"
