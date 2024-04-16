@@ -10,7 +10,7 @@ concurrency:
 
 defaults:
   run:
-    shell: powershell
+    shell: pwsh
 
 permissions:
   contents: read
@@ -25,14 +25,14 @@ env:
 jobs:
   PregateCheck:
     if: (github.event.pull_request.base.repo.full_name != github.event.pull_request.head.repo.full_name) && (github.event_name != 'pull_request')
-    runs-on: [ windows-latest ]
+    runs-on: windows-latest
     steps:
       - uses: freddydk/AL-Go/Actions/VerifyPRChanges@issue1018
 
   Initialization:
     needs: [ PregateCheck ]
     if: (!failure() && !cancelled())
-    runs-on: [ windows-latest ]
+    runs-on: [ ubuntu-latest ]
     outputs:
       telemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
       githubRunner: ${{ steps.ReadSettings.outputs.GitHubRunnerJson }}
@@ -46,7 +46,7 @@ jobs:
       - name: Dump Workflow Information
         uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@issue1018
         with:
-          shell: powershell
+          shell: pwsh
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -58,14 +58,14 @@ jobs:
         id: init
         uses: freddydk/AL-Go/Actions/WorkflowInitialize@issue1018
         with:
-          shell: powershell
+          shell: pwsh
           eventId: "DO0104"
 
       - name: Read settings
         id: ReadSettings
         uses: freddydk/AL-Go/Actions/ReadSettings@issue1018
         with:
-          shell: powershell
+          shell: pwsh
 
       - name: Determine Workflow Depth
         id: DetermineWorkflowDepth
@@ -76,7 +76,7 @@ jobs:
         id: determineProjectsToBuild
         uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@issue1018
         with:
-          shell: powershell
+          shell: pwsh
           maxBuildDepth: ${{ env.workflowDepth }}
 
   Build:
@@ -106,7 +106,7 @@ jobs:
   StatusCheck:
     needs: [ Initialization, Build ]
     if: (!cancelled())
-    runs-on: [ windows-latest ]
+    runs-on: [ ubuntu-latest ]
     name: Pull Request Status Check
     steps:
       - name: Pull Request Status Check
@@ -115,4 +115,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
-          shell: powershell
+          shell: pwsh
