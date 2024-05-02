@@ -1,6 +1,6 @@
 {
   "type": "PTE",
-  "templateUrl": "https://github.com/microsoft/AL-Go-PTE@main",
+  "templateUrl": "https://github.com/freddydk/AL-Go@Release",
   "currentSchedule": "0 2 * * 1,2,3,4,5",
   "NextMinorSchedule": "0 2 * * 6",
   "NextMajorSchedule": "0 2 * * 0",
@@ -18,5 +18,5 @@
     "EnvironmentType": "Test"
   },
   "debugMode": true,
-  "templateSha": "0af8feb4cf098ebec44278866877fc9aceff0513"
+  "templateSha": "d2e0a010bf2dce4df9b6b636841464b4f15a8d2e"
 }

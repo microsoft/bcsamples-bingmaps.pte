@@ -30,19 +30,19 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: microsoft/AL-Go-Actions/WorkflowInitialize@v5.1
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@Release
         with:
           shell: pwsh
           eventId: "DO0097"
         
       - name: Read settings
-        uses: microsoft/AL-Go-Actions/ReadSettings@v5.1
+        uses: freddydk/AL-Go/Actions/ReadSettings@Release
         with:
           shell: pwsh
 
       - name: Determine Deployment Environments
         id: DetermineDeploymentEnvironments
-        uses: microsoft/AL-Go-Actions/DetermineDeploymentEnvironments@v5.1
+        uses: freddydk/AL-Go/Actions/DetermineDeploymentEnvironments@Release
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
@@ -55,7 +55,7 @@ jobs:
         uses: actions/configure-pages@v5
         
       - name: Build Reference Documentation
-        uses: microsoft/AL-Go-Actions/BuildReferenceDocumentation@v5.1
+        uses: freddydk/AL-Go/Actions/BuildReferenceDocumentation@Release
         with:
           shell: pwsh
           artifacts: 'latest'
