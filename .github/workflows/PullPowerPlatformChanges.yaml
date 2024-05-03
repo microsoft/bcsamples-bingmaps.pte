@@ -1,4 +1,4 @@
-name: " Pull Power Platform changes"
+name: ' Pull Power Platform changes'
 
 on:
   workflow_dispatch:
@@ -81,10 +81,10 @@ jobs:
           $errorActionPreference = "Stop"; $ProgressPreference = "SilentlyContinue"; Set-StrictMode -Version 2.0
           $solutionFolder = $env:_solutionFolder
           if ($solutionFolder -eq '') {
-            write-host "Solution folder is not provided. Taking the folder from AL-Go settings"
+            Write-Host "Solution folder is not provided. Taking the folder from AL-Go settings"
             $solutionFolder = $env:powerPlatformSolutionFolder
           }
-          write-host "Solution folder: $solutionFolder"
+          Write-Host "Solution folder: $solutionFolder"
           Add-Content -encoding utf8 -Path $env:GITHUB_ENV -Value "solutionFolder=$solutionFolder"
 
       - name: Pull changes from Power Platform environment
@@ -93,7 +93,6 @@ jobs:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
           shell: pwsh
-          actionsRepo: 'freddydk/AL-Go/Actions@PPP'
           token: ${{ steps.ReadSecrets.outputs.TokenForPush }}
           directCommit: ${{ inputs.directCommit }}
           environmentName: ${{ inputs.environment }}

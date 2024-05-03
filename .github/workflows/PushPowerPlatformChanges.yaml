@@ -11,8 +11,7 @@ on:
         required: false
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 defaults:
   run:
@@ -38,6 +37,7 @@ jobs:
           _environment: ${{ inputs.environment }}
         run: |
           $errorActionPreference = "Stop"; $ProgressPreference = "SilentlyContinue"; Set-StrictMode -Version 2.0
+          # Environment names can contains spaces and tags (like (PROD) etc. We need to remove them to get the correct environment name)
           $envName = "$env:_environment".Split(' ')[0]
           Add-Content -encoding utf8 -Path $env:GITHUB_ENV -Value "envName=$envName"
 
@@ -72,10 +72,10 @@ jobs:
           $errorActionPreference = "Stop"; $ProgressPreference = "SilentlyContinue"; Set-StrictMode -Version 2.0
           $solutionFolder = $env:_solutionFolder
           if ($solutionFolder -eq '') {
-            write-host "Solution folder is not provided. Taking the folder from AL-Go settings"
+            Write-Host "Solution folder is not provided. Taking the folder from AL-Go settings"
             $solutionFolder = $env:powerPlatformSolutionFolder
           }
-          write-host "Solution folder: $solutionFolder"
+          Write-Host "Solution folder: $solutionFolder"
           Add-Content -encoding utf8 -Path $env:GITHUB_ENV -Value "solutionFolder=$solutionFolder"
 
       - name: Export and push changes to Power Platform
@@ -84,7 +84,6 @@ jobs:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
           shell: pwsh
-          actionsRepo: 'freddydk/AL-Go/Actions@PPP'
           environmentName: ${{ inputs.environment }}
           solutionFolder: ${{ env.solutionFolder }}
           deploymentEnvironmentsJson: ${{ steps.DetermineDeploymentEnvironments.outputs.deploymentEnvironmentsJson }}

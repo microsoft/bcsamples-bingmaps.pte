@@ -72,7 +72,7 @@ jobs:
       releaseVersion: ${{ steps.createreleasenotes.outputs.releaseVersion }}
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@Release
+        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@PPP
         with:
           shell: pwsh
 
@@ -81,21 +81,21 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@Release
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@PPP
         with:
           shell: pwsh
           eventId: "DO0094"
 
       - name: Read settings
         id: ReadSettings
-        uses: freddydk/AL-Go/Actions/ReadSettings@Release
+        uses: freddydk/AL-Go/Actions/ReadSettings@PPP
         with:
           shell: pwsh
-          get: templateUrl,repoName
+          get: templateUrl,repoName,type,powerPlatformSolutionFolder
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@Release
+        uses: freddydk/AL-Go/Actions/ReadSecrets@PPP
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -104,12 +104,12 @@ jobs:
   
       - name: Determine Projects
         id: determineProjects
-        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@Release
+        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@PPP
         with:
           shell: pwsh
 
       - name: Check for updates to AL-Go system files
-        uses: freddydk/AL-Go/Actions/CheckForUpdates@Release
+        uses: freddydk/AL-Go/Actions/CheckForUpdates@PPP
         with:
           shell: pwsh
           templateUrl: ${{ env.templateUrl }}
@@ -117,11 +117,18 @@ jobs:
 
       - name: Analyze Artifacts
         id: analyzeartifacts
+        env:
+          _appVersion: ${{ github.event.inputs.appVersion }}
         run: |
           $errorActionPreference = "Stop"; $ProgressPreference = "SilentlyContinue"; Set-StrictMode -Version 2.0
           $projects = '${{ steps.determineProjects.outputs.ProjectsJson }}' | ConvertFrom-Json
           Write-Host "projects:"
           $projects | ForEach-Object { Write-Host "- $_" }
+          if ($env:type -eq "PTE" -and $env:powerPlatformSolutionFolder -ne "") {
+            Write-Host "PowerPlatformSolution:"
+            Write-Host "- $($env:powerPlatformSolutionFolder)"
+            $projects += @($env:powerPlatformSolutionFolder)
+          }
           $include = @()
           $sha = ''
           $allArtifacts = @()
@@ -149,17 +156,18 @@ jobs:
             }
             $refname = "$ENV:GITHUB_REF_NAME".Replace('/','_')
             Write-Host "Analyzing artifacts for project $project"
-            $appVersion = '${{ github.event.inputs.appVersion }}'
+            $appVersion = "$env:_appVersion"
             if ($appVersion -eq "latest") {
               Write-Host "Grab latest"
-              $artifact = $allArtifacts | Where-Object { $_.name -like "$project-$refname-Apps-*" } | Select-Object -First 1
+              $artifact = $allArtifacts | Where-Object { $_.name -like "$project-$refname-Apps-*" -or $_.name -like "$project-$refname-PowerPlatformSolution-*" } | Select-Object -First 1
             }
             else {
-              Write-Host "Search for $project-$refname-Apps-$appVersion"
-              $artifact = $allArtifacts | Where-Object { $_.name -eq "$project-$refname-Apps-$appVersion" } | Select-Object -First 1
+              Write-Host "Search for $project-$refname-Apps-$appVersion or $project-$refname-PowerPlatformSolution-$appVersion"
+              $artifact = $allArtifacts | Where-Object { $_.name -eq "$project-$refname-Apps-$appVersion"-or $_.name -eq "$project-$refname-PowerPlatformSolution-$appVersion" } | Select-Object -First 1
             }
             if ($artifact) {
-              $artifactsVersion = $artifact.name.SubString($artifact.name.LastIndexOf('-Apps-')+6)
+              $startIndex = $artifact.name.LastIndexOf('-') + 1
+              $artifactsVersion = $artifact.name.SubString($startIndex)
             }
             else {
               Write-Host "::Error::No artifacts found for this project"
@@ -175,13 +183,14 @@ jobs:
               $sha = $artifact.workflow_run.head_sha
             }
 
-            $allArtifacts | Where-Object { ($_.name -like "$project-$refname-Apps-$($artifactsVersion)" -or $_.name -like "$project-$refname-TestApps-$($artifactsVersion)" -or $_.name -like "$project-$refname-Dependencies-$($artifactsVersion)") } | ForEach-Object {
+            Write-host "Looking for $project-$refname-Apps-$artifactsVersion or $project-$refname-TestApps-$artifactsVersion or $project-$refname-Dependencies-$artifactsVersion or $project-$refname-PowerPlatformSolution-$artifactsVersion"
+            $allArtifacts | Where-Object { ($_.name -like "$project-$refname-Apps-$artifactsVersion" -or $_.name -like "$project-$refname-TestApps-$artifactsVersion" -or $_.name -like "$project-$refname-Dependencies-$artifactsVersion" -or $_.name -like "$project-$refname-PowerPlatformSolution-$artifactsVersion") } | ForEach-Object {
               $atype = $_.name.SubString(0,$_.name.Length-$artifactsVersion.Length-1)
               $atype = $atype.SubString($atype.LastIndexOf('-')+1)
               $include += $( [ordered]@{ "name" = $_.name; "url" = $_.archive_download_url; "atype" = $atype; "project" = $thisproject } )
             }
             if ($include.Count -eq 0) {
-              Write-Host "::Error::No artifacts found"
+              Write-Host "::Error::No artifacts found for version $artifactsVersion"
               exit 1
             }
           }
@@ -194,7 +203,7 @@ jobs:
 
       - name: Prepare release notes
         id: createreleasenotes
-        uses: freddydk/AL-Go/Actions/CreateReleaseNotes@Release
+        uses: freddydk/AL-Go/Actions/CreateReleaseNotes@PPP
         with:
           shell: pwsh
           parentTelemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
@@ -237,13 +246,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@Release
+        uses: freddydk/AL-Go/Actions/ReadSettings@PPP
         with:
           shell: pwsh
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@Release
+        uses: freddydk/AL-Go/Actions/ReadSecrets@PPP
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -281,7 +290,7 @@ jobs:
             });
 
       - name: Deliver to NuGet
-        uses: freddydk/AL-Go/Actions/Deliver@Release
+        uses: freddydk/AL-Go/Actions/Deliver@PPP
         if: ${{ fromJson(steps.ReadSecrets.outputs.Secrets).nuGetContext != '' }}
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
@@ -294,7 +303,7 @@ jobs:
           atypes: 'Apps,TestApps'
 
       - name: Deliver to Storage
-        uses: freddydk/AL-Go/Actions/Deliver@Release
+        uses: freddydk/AL-Go/Actions/Deliver@PPP
         if: ${{ fromJson(steps.ReadSecrets.outputs.Secrets).storageContext != '' }}
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
@@ -338,13 +347,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@Release
+        uses: freddydk/AL-Go/Actions/ReadSettings@PPP
         with:
           shell: pwsh
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@Release
+        uses: freddydk/AL-Go/Actions/ReadSecrets@PPP
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -352,7 +361,7 @@ jobs:
           useGhTokenWorkflowForPush: '${{ github.event.inputs.useGhTokenWorkflow }}'
 
       - name: Update Version Number
-        uses: freddydk/AL-Go/Actions/IncrementVersionNumber@Release
+        uses: freddydk/AL-Go/Actions/IncrementVersionNumber@PPP
         with:
           shell: pwsh
           token: ${{ steps.ReadSecrets.outputs.TokenForPush }}
@@ -370,7 +379,7 @@ jobs:
 
       - name: Finalize the workflow
         id: PostProcess
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@Release
+        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@PPP
         with:
           shell: pwsh
           eventId: "DO0094"

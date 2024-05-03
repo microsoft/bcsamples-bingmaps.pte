@@ -40,10 +40,11 @@ jobs:
       projects: ${{ steps.determineProjectsToBuild.outputs.ProjectsJson }}
       projectDependenciesJson: ${{ steps.determineProjectsToBuild.outputs.ProjectDependenciesJson }}
       buildOrderJson: ${{ steps.determineProjectsToBuild.outputs.BuildOrderJson }}
+      powerPlatformSolutionFolder: ${{ steps.DeterminePowerPlatformSolutionFolder.outputs.powerPlatformSolutionFolder }}
       workflowDepth: ${{ steps.DetermineWorkflowDepth.outputs.WorkflowDepth }}
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@Release
+        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@PPP
         with:
           shell: pwsh
 
@@ -54,17 +55,17 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@Release
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@PPP
         with:
           shell: pwsh
           eventId: "DO0091"
 
       - name: Read settings
         id: ReadSettings
-        uses: freddydk/AL-Go/Actions/ReadSettings@Release
+        uses: freddydk/AL-Go/Actions/ReadSettings@PPP
         with:
           shell: pwsh
-          get: type
+          get: type, powerPlatformSolutionFolder
 
       - name: Determine Workflow Depth
         id: DetermineWorkflowDepth
@@ -73,14 +74,20 @@ jobs:
 
       - name: Determine Projects To Build
         id: determineProjectsToBuild
-        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@Release
+        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@PPP
         with:
           shell: pwsh
           maxBuildDepth: ${{ env.workflowDepth }}
 
+      - name: Determine PowerPlatform Solution Folder
+        id: DeterminePowerPlatformSolutionFolder
+        if: env.type == 'PTE'
+        run: |
+          Add-Content -Encoding UTF8 -Path $env:GITHUB_OUTPUT -Value "powerPlatformSolutionFolder=$($env:powerPlatformSolutionFolder)"
+
       - name: Determine Delivery Target Secrets
         id: DetermineDeliveryTargetSecrets
-        uses: freddydk/AL-Go/Actions/DetermineDeliveryTargets@Release
+        uses: freddydk/AL-Go/Actions/DetermineDeliveryTargets@PPP
         with:
           shell: pwsh
           projectsJson: '${{ steps.determineProjectsToBuild.outputs.ProjectsJson }}'
@@ -88,7 +95,7 @@ jobs:
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@Release
+        uses: freddydk/AL-Go/Actions/ReadSecrets@PPP
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -96,7 +103,7 @@ jobs:
 
       - name: Determine Delivery Targets
         id: DetermineDeliveryTargets
-        uses: freddydk/AL-Go/Actions/DetermineDeliveryTargets@Release
+        uses: freddydk/AL-Go/Actions/DetermineDeliveryTargets@PPP
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
@@ -106,7 +113,7 @@ jobs:
 
       - name: Determine Deployment Environments
         id: DetermineDeploymentEnvironments
-        uses: freddydk/AL-Go/Actions/DetermineDeploymentEnvironments@Release
+        uses: freddydk/AL-Go/Actions/DetermineDeploymentEnvironments@PPP
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
@@ -122,13 +129,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@Release
+        uses: freddydk/AL-Go/Actions/ReadSettings@PPP
         with:
           shell: pwsh
           get: templateUrl
 
       - name: Check for updates to AL-Go system files
-        uses: freddydk/AL-Go/Actions/CheckForUpdates@Release
+        uses: freddydk/AL-Go/Actions/CheckForUpdates@PPP
         with:
           shell: pwsh
           templateUrl: ${{ env.templateUrl }}
@@ -158,9 +165,23 @@ jobs:
       signArtifacts: true
       useArtifactCache: true
 
+  BuildPP:
+    needs: [ Initialization ]
+    if: (!failure()) && (!cancelled()) && needs.Initialization.outputs.powerPlatformSolutionFolder != ''
+    name: Build PowerPlatform Solution
+    uses: ./.github/workflows/_BuildPowerPlatformSolution.yaml
+    secrets: inherit
+    with:
+      shell: ${{ needs.Initialization.outputs.githubRunnerShell }}
+      runsOn: ${{ needs.Initialization.outputs.githubRunner }}
+      parentTelemetryScopeJson: ${{ needs.Initialization.outputs.telemetryScopeJson }}
+      project: ${{ needs.Initialization.outputs.powerPlatformSolutionFolder }}
+      projectName: ${{ needs.Initialization.outputs.powerPlatformSolutionFolder }}
+      publishArtifacts: ${{ github.ref_name == 'main' || startswith(github.ref_name, 'release/') || startswith(github.ref_name, 'releases/') || needs.Initialization.outputs.deliveryTargetsJson != '[]' || needs.Initialization.outputs.environmentCount > 0 }}
+
   DeployALDoc:
     needs: [ Initialization, Build ]
-    if: always() && needs.Build.result == 'Success' && needs.Initialization.outputs.generateALDocArtifact == 1 && github.ref_name == 'main'
+    if: (!cancelled()) && needs.Build.result == 'Success' && needs.Initialization.outputs.generateALDocArtifact == 1 && github.ref_name == 'main'
     runs-on: windows-latest
     name: Deploy Reference Documentation
     permissions:
@@ -181,7 +202,7 @@ jobs:
           path: '.artifacts'
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@Release
+        uses: freddydk/AL-Go/Actions/ReadSettings@PPP
         with:
           shell: pwsh
 
@@ -190,7 +211,7 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Build Reference Documentation
-        uses: freddydk/AL-Go/Actions/BuildReferenceDocumentation@Release
+        uses: freddydk/AL-Go/Actions/BuildReferenceDocumentation@PPP
         with:
           shell: pwsh
           artifacts: '.artifacts'
@@ -206,8 +227,8 @@ jobs:
         uses: actions/deploy-pages@v4
 
   Deploy:
-    needs: [ Initialization, Build ]
-    if: always() && needs.Build.result == 'Success' && needs.Initialization.outputs.environmentCount > 0
+    needs: [ Initialization, Build, BuildPP ]
+    if: (!cancelled()) && needs.Build.result != 'Failure' && needs.BuildPP.result != 'Failure' && needs.Initialization.outputs.environmentCount > 0
     strategy: ${{ fromJson(needs.Initialization.outputs.environmentsMatrixJson) }}
     runs-on: ${{ fromJson(matrix.os) }}
     name: Deploy to ${{ matrix.environment }}
@@ -227,9 +248,10 @@ jobs:
           path: '.artifacts'
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@Release
+        uses: freddydk/AL-Go/Actions/ReadSettings@PPP
         with:
           shell: ${{ matrix.shell }}
+          get: type,powerPlatformSolutionFolder
 
       - name: EnvName
         id: envName
@@ -240,27 +262,38 @@ jobs:
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@Release
+        uses: freddydk/AL-Go/Actions/ReadSecrets@PPP
         with:
           shell: ${{ matrix.shell }}
           gitHubSecrets: ${{ toJson(secrets) }}
           getSecrets: '${{ steps.envName.outputs.envName }}-AuthContext,${{ steps.envName.outputs.envName }}_AuthContext,AuthContext,${{ steps.envName.outputs.envName }}-EnvironmentName,${{ steps.envName.outputs.envName }}_EnvironmentName,EnvironmentName,projects'
 
-      - name: Deploy
+      - name: Deploy to Business Central
         id: Deploy
-        uses: freddydk/AL-Go/Actions/Deploy@Release
+        uses: freddydk/AL-Go/Actions/Deploy@PPP
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
           shell: ${{ matrix.shell }}
           environmentName: ${{ matrix.environment }}
-          artifacts: '.artifacts'
+          artifactsFolder: '.artifacts'
           type: 'CD'
           deploymentEnvironmentsJson: ${{ needs.Initialization.outputs.deploymentEnvironmentsJson }}
 
+      - name: Deploy to Power Platform
+        if: env.type == 'PTE' && env.powerPlatformSolutionFolder != ''
+        uses: freddydk/AL-Go/Actions/DeployPowerPlatform@PPP
+        env:
+          Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
+        with:
+          shell: pwsh
+          environmentName: ${{ matrix.environment }}
+          artifactsFolder: '.artifacts'
+          deploymentEnvironmentsJson: ${{ needs.Initialization.outputs.deploymentEnvironmentsJson }}
+
   Deliver:
-    needs: [ Initialization, Build ]
-    if: always() && needs.Build.result == 'Success' && needs.Initialization.outputs.deliveryTargetsJson != '[]'
+    needs: [ Initialization, Build, BuildPP ]
+    if: (!cancelled()) && needs.Build.result != 'Failure' && needs.BuildPP.result != 'Failure' && needs.Initialization.outputs.deliveryTargetsJson != '[]'
     strategy:
       matrix:
         deliveryTarget: ${{ fromJson(needs.Initialization.outputs.deliveryTargetsJson) }}
@@ -277,20 +310,20 @@ jobs:
           path: '.artifacts'
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@Release
+        uses: freddydk/AL-Go/Actions/ReadSettings@PPP
         with:
           shell: pwsh
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@Release
+        uses: freddydk/AL-Go/Actions/ReadSecrets@PPP
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
           getSecrets: '${{ matrix.deliveryTarget }}Context'
 
       - name: Deliver
-        uses: freddydk/AL-Go/Actions/Deliver@Release
+        uses: freddydk/AL-Go/Actions/Deliver@PPP
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
@@ -301,7 +334,7 @@ jobs:
           artifacts: '.artifacts'
 
   PostProcess:
-    needs: [ Initialization, Build, Deploy, Deliver, DeployALDoc ]
+    needs: [ Initialization, Build, BuildPP, Deploy, Deliver, DeployALDoc ]
     if: (!cancelled())
     runs-on: [ ubuntu-latest ]
     steps:
@@ -310,7 +343,7 @@ jobs:
 
       - name: Finalize the workflow
         id: PostProcess
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@Release
+        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@PPP
         with:
           shell: pwsh
           eventId: "DO0091"
