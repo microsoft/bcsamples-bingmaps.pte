@@ -7,7 +7,7 @@
   "testFolders": [
     "BingMaps.Test"
   ],
-  "RepoVersion": "17.0",
+  "RepoVersion": "19.0",
   "artifact": "//19.0//first",
   "applicationDependency": "19.0.0.0"
 }
