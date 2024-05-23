@@ -11,7 +11,8 @@
   "githubRunnerShell": "pwsh",
   "UpdateDependencies": true,
   "ALDoc": {
-    "ContinuousDeployment": true
+    "ContinuousDeployment": true,
+    "MaxReleases": 0
   },
   "DeployToQA": {
     "EnvironmentType": "Test"
