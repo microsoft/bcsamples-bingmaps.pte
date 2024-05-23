@@ -72,7 +72,7 @@ jobs:
       releaseVersion: ${{ steps.createreleasenotes.outputs.releaseVersion }}
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@PPP
+        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@lowhanging
         with:
           shell: pwsh
 
@@ -81,21 +81,21 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@PPP
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@lowhanging
         with:
           shell: pwsh
           eventId: "DO0094"
 
       - name: Read settings
         id: ReadSettings
-        uses: freddydk/AL-Go/Actions/ReadSettings@PPP
+        uses: freddydk/AL-Go/Actions/ReadSettings@lowhanging
         with:
           shell: pwsh
           get: templateUrl,repoName,type,powerPlatformSolutionFolder
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@PPP
+        uses: freddydk/AL-Go/Actions/ReadSecrets@lowhanging
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -104,12 +104,12 @@ jobs:
   
       - name: Determine Projects
         id: determineProjects
-        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@PPP
+        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@lowhanging
         with:
           shell: pwsh
 
       - name: Check for updates to AL-Go system files
-        uses: freddydk/AL-Go/Actions/CheckForUpdates@PPP
+        uses: freddydk/AL-Go/Actions/CheckForUpdates@lowhanging
         with:
           shell: pwsh
           templateUrl: ${{ env.templateUrl }}
@@ -203,7 +203,7 @@ jobs:
 
       - name: Prepare release notes
         id: createreleasenotes
-        uses: freddydk/AL-Go/Actions/CreateReleaseNotes@PPP
+        uses: freddydk/AL-Go/Actions/CreateReleaseNotes@lowhanging
         with:
           shell: pwsh
           parentTelemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
@@ -246,13 +246,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@PPP
+        uses: freddydk/AL-Go/Actions/ReadSettings@lowhanging
         with:
           shell: pwsh
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@PPP
+        uses: freddydk/AL-Go/Actions/ReadSecrets@lowhanging
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -290,7 +290,7 @@ jobs:
             });
 
       - name: Deliver to NuGet
-        uses: freddydk/AL-Go/Actions/Deliver@PPP
+        uses: freddydk/AL-Go/Actions/Deliver@lowhanging
         if: ${{ fromJson(steps.ReadSecrets.outputs.Secrets).nuGetContext != '' }}
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
@@ -303,7 +303,7 @@ jobs:
           atypes: 'Apps,TestApps'
 
       - name: Deliver to Storage
-        uses: freddydk/AL-Go/Actions/Deliver@PPP
+        uses: freddydk/AL-Go/Actions/Deliver@lowhanging
         if: ${{ fromJson(steps.ReadSecrets.outputs.Secrets).storageContext != '' }}
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
@@ -347,13 +347,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@PPP
+        uses: freddydk/AL-Go/Actions/ReadSettings@lowhanging
         with:
           shell: pwsh
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@PPP
+        uses: freddydk/AL-Go/Actions/ReadSecrets@lowhanging
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -361,7 +361,7 @@ jobs:
           useGhTokenWorkflowForPush: '${{ github.event.inputs.useGhTokenWorkflow }}'
 
       - name: Update Version Number
-        uses: freddydk/AL-Go/Actions/IncrementVersionNumber@PPP
+        uses: freddydk/AL-Go/Actions/IncrementVersionNumber@lowhanging
         with:
           shell: pwsh
           token: ${{ steps.ReadSecrets.outputs.TokenForPush }}
@@ -379,7 +379,7 @@ jobs:
 
       - name: Finalize the workflow
         id: PostProcess
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@PPP
+        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@lowhanging
         with:
           shell: pwsh
           eventId: "DO0094"
