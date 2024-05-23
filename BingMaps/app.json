@@ -4,7 +4,7 @@
   "publisher": "Freddy Kristiansen",
   "brief": "BingMaps Integration",
   "description": "BingMaps Integration App with geocode functionality and map control",
-  "version": "6.3.0.0",
+  "version": "19.0.0.0",
   "privacyStatement": "https://dev.azure.com/businesscentralapps/BingMaps.PTE",
   "EULA": "https://dev.azure.com/businesscentralapps/BingMaps.PTE",
   "help": "https://dev.azure.com/businesscentralapps/BingMaps.PTE",
@@ -13,8 +13,8 @@
   "logo": "bingmaps256x240.png",
   "dependencies": [],
   "screenshots": ["1.jpg","2.jpg","3.jpg"],
-  "platform": "21.0.0.0",
-  "application": "21.0.0.0",
+  "platform": "19.0.0.0",
+  "application": "19.0.0.0",
   "idRanges": [
     {
       "from": 74119,
@@ -31,7 +31,7 @@
   "supportedLocales": [
     "en-US"
   ],
-  "runtime": "10.0",
+  "runtime": "8.0",
   "keyVaultUrls": [],
   "applicationInsightsConnectionString": "InstrumentationKey=84bd9223-67d4-4378-8590-9e4a46023be2;IngestionEndpoint=https://westeurope-1.in.applicationinsights.azure.com/"
 }
