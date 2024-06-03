@@ -1,6 +1,6 @@
 {
   "type": "PTE",
-  "templateUrl": "https://github.com/freddydk/AL-Go@lowhanging",
+  "templateUrl": "https://github.com/freddydk/AL-Go@issue1093",
   "currentSchedule": "0 2 * * 1,2,3,4,5",
   "NextMinorSchedule": "0 2 * * 6",
   "NextMajorSchedule": "0 2 * * 0",
@@ -18,5 +18,5 @@
     "EnvironmentType": "Test"
   },
   "debugMode": true,
-  "templateSha": "8362033880411bba84b294cb29099c1683d87a69"
+  "templateSha": "47336e080b61a5836ad059ee402fb923a3f4ef13"
 }

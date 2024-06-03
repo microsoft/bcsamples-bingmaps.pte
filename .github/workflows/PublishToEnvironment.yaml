@@ -14,6 +14,7 @@ on:
 permissions:
   contents: read
   actions: read
+  id-token: write
 
 defaults:
   run:
@@ -35,7 +36,7 @@ jobs:
       deviceCode: ${{ steps.Authenticate.outputs.deviceCode }}
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@lowhanging
+        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@issue1093
         with:
           shell: pwsh
 
@@ -44,20 +45,20 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@lowhanging
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@issue1093
         with:
           shell: pwsh
           eventId: "DO0097"
 
       - name: Read settings
         id: ReadSettings
-        uses: freddydk/AL-Go/Actions/ReadSettings@lowhanging
+        uses: freddydk/AL-Go/Actions/ReadSettings@issue1093
         with:
           shell: pwsh
 
       - name: Determine Deployment Environments
         id: DetermineDeploymentEnvironments
-        uses: freddydk/AL-Go/Actions/DetermineDeploymentEnvironments@lowhanging
+        uses: freddydk/AL-Go/Actions/DetermineDeploymentEnvironments@issue1093
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
@@ -75,7 +76,7 @@ jobs:
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@lowhanging
+        uses: freddydk/AL-Go/Actions/ReadSecrets@issue1093
         if: steps.DetermineDeploymentEnvironments.outputs.UnknownEnvironment == 1
         with:
           shell: pwsh
@@ -107,7 +108,7 @@ jobs:
             Write-Host "No AuthContext provided for $envName, initiating Device Code flow"
             $ALGoHelperPath = "$([System.IO.Path]::GetTempFileName()).ps1"
             $webClient = New-Object System.Net.WebClient
-            $webClient.DownloadFile('https://raw.githubusercontent.com/freddydk/AL-Go/lowhanging/Actions/AL-Go-Helper.ps1', $ALGoHelperPath)
+            $webClient.DownloadFile('https://raw.githubusercontent.com/freddydk/AL-Go/issue1093/Actions/AL-Go-Helper.ps1', $ALGoHelperPath)
             . $ALGoHelperPath
             DownloadAndImportBcContainerHelper
             $authContext = New-BcAuthContext -includeDeviceLogin -deviceLoginTimeout ([TimeSpan]::FromSeconds(0))
@@ -141,21 +142,21 @@ jobs:
           Add-Content -Encoding UTF8 -Path $env:GITHUB_OUTPUT -Value "envName=$envName"
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@lowhanging
+        uses: freddydk/AL-Go/Actions/ReadSettings@issue1093
         with:
           shell: ${{ matrix.shell }}
           get: type,powerPlatformSolutionFolder
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@lowhanging
+        uses: freddydk/AL-Go/Actions/ReadSecrets@issue1093
         with:
           shell: ${{ matrix.shell }}
           gitHubSecrets: ${{ toJson(secrets) }}
           getSecrets: '${{ steps.envName.outputs.envName }}-AuthContext,${{ steps.envName.outputs.envName }}_AuthContext,AuthContext,${{ steps.envName.outputs.envName }}-EnvironmentName,${{ steps.envName.outputs.envName }}_EnvironmentName,EnvironmentName,projects'
 
       - name: Get Artifacts for deployment
-        uses: freddydk/AL-Go/Actions/GetArtifactsForDeployment@lowhanging
+        uses: freddydk/AL-Go/Actions/GetArtifactsForDeployment@issue1093
         with:
           shell: pwsh
           artifactsVersion: ${{ github.event.inputs.appVersion }}
@@ -163,7 +164,7 @@ jobs:
 
       - name: Deploy to Business Central
         id: Deploy
-        uses: freddydk/AL-Go/Actions/Deploy@lowhanging
+        uses: freddydk/AL-Go/Actions/Deploy@issue1093
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
@@ -175,7 +176,7 @@ jobs:
 
       - name: Deploy to Power Platform
         if: env.type == 'PTE' && env.powerPlatformSolutionFolder != ''
-        uses: freddydk/AL-Go/Actions/DeployPowerPlatform@lowhanging
+        uses: freddydk/AL-Go/Actions/DeployPowerPlatform@issue1093
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
@@ -194,7 +195,7 @@ jobs:
 
       - name: Finalize the workflow
         id: PostProcess
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@lowhanging
+        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@issue1093
         with:
           shell: pwsh
           eventId: "DO0097"

@@ -24,6 +24,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  id-token: write
 
 defaults:
   run:
@@ -39,7 +40,7 @@ jobs:
     runs-on: [ ubuntu-latest ]
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@lowhanging
+        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@issue1093
         with:
           shell: pwsh
 
@@ -48,19 +49,19 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@lowhanging
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@issue1093
         with:
           shell: pwsh
           eventId: "DO0096"
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@lowhanging
+        uses: freddydk/AL-Go/Actions/ReadSettings@issue1093
         with:
           shell: pwsh
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@lowhanging
+        uses: freddydk/AL-Go/Actions/ReadSecrets@issue1093
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -68,7 +69,7 @@ jobs:
           useGhTokenWorkflowForPush: '${{ github.event.inputs.useGhTokenWorkflow }}'
 
       - name: Increment Version Number
-        uses: freddydk/AL-Go/Actions/IncrementVersionNumber@lowhanging
+        uses: freddydk/AL-Go/Actions/IncrementVersionNumber@issue1093
         with:
           shell: pwsh
           token: ${{ steps.ReadSecrets.outputs.TokenForPush }}
@@ -79,7 +80,7 @@ jobs:
 
       - name: Finalize the workflow
         if: always()
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@lowhanging
+        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@issue1093
         with:
           shell: pwsh
           eventId: "DO0096"
