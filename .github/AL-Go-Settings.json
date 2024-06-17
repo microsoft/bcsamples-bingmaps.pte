@@ -14,10 +14,6 @@
     "ContinuousDeployment": true,
     "MaxReleases": 0
   },
-  "DeployToQA": {
-    "EnvironmentType": "Test"
-  },
-  "debugMode": true,
   "keyVaultCodesignCertificateName": "FreddyKristiansen",
   "templateSha": "007a4190a33ead03d96785aa2c687b3dfafb231f"
 }
