@@ -26,9 +26,10 @@ on:
         default: false
 
 permissions:
+  actions: read
   contents: write
-  pull-requests: write
   id-token: write
+  pull-requests: write
 
 defaults:
   run:
@@ -44,34 +45,33 @@ jobs:
     runs-on: [ ubuntu-latest ]
     outputs:
       deviceCode: ${{ steps.authenticate.outputs.deviceCode }}
-      telemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
       githubRunner: ${{ steps.ReadSettings.outputs.GitHubRunnerJson }}
       githubRunnerShell: ${{ steps.ReadSettings.outputs.GitHubRunnerShell }}
+      telemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@issue1093
+        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@nuget
         with:
           shell: pwsh
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@issue1093
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@nuget
         with:
           shell: pwsh
-          eventId: "DO0093"
 
       - name: Read settings
         id: ReadSettings
-        uses: freddydk/AL-Go/Actions/ReadSettings@issue1093
+        uses: freddydk/AL-Go/Actions/ReadSettings@nuget
         with:
           shell: pwsh
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@issue1093
+        uses: freddydk/AL-Go/Actions/ReadSecrets@nuget
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -90,7 +90,7 @@ jobs:
             Write-Host "AdminCenterApiCredentials not provided, initiating Device Code flow"
             $ALGoHelperPath = "$([System.IO.Path]::GetTempFileName()).ps1"
             $webClient = New-Object System.Net.WebClient
-            $webClient.DownloadFile('https://raw.githubusercontent.com/freddydk/AL-Go/issue1093/Actions/AL-Go-Helper.ps1', $ALGoHelperPath)
+            $webClient.DownloadFile('https://raw.githubusercontent.com/freddydk/AL-Go/nuget/Actions/AL-Go-Helper.ps1', $ALGoHelperPath)
             . $ALGoHelperPath
             DownloadAndImportBcContainerHelper
             $authContext = New-BcAuthContext -includeDeviceLogin -deviceLoginTimeout ([TimeSpan]::FromSeconds(0))
@@ -109,16 +109,16 @@ jobs:
       deviceCode: ${{ needs.Initialization.outputs.deviceCode }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@issue1093
+        uses: freddydk/AL-Go/Actions/ReadSettings@nuget
         with:
           shell: pwsh
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@issue1093
+        uses: freddydk/AL-Go/Actions/ReadSecrets@nuget
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -137,11 +137,10 @@ jobs:
           Add-Content -Encoding UTF8 -Path $env:GITHUB_OUTPUT -value "adminCenterApiCredentials=$adminCenterApiCredentials"
 
       - name: Create Development Environment
-        uses: freddydk/AL-Go/Actions/CreateDevelopmentEnvironment@issue1093
+        uses: freddydk/AL-Go/Actions/CreateDevelopmentEnvironment@nuget
         with:
           shell: pwsh
           token: ${{ steps.ReadSecrets.outputs.TokenForPush }}
-          parentTelemetryScopeJson: ${{ needs.Initialization.outputs.telemetryScopeJson }}
           environmentName: ${{ github.event.inputs.environmentName }}
           project: ${{ github.event.inputs.project }}
           reUseExistingEnvironment: ${{ github.event.inputs.reUseExistingEnvironment }}
@@ -150,8 +149,10 @@ jobs:
 
       - name: Finalize the workflow
         if: always()
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@issue1093
+        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@nuget
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         with:
           shell: pwsh
-          eventId: "DO0093"
           telemetryScopeJson: ${{ needs.Initialization.outputs.telemetryScopeJson }}
+          currentJobContext: ${{ toJson(job) }}

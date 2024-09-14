@@ -32,9 +32,10 @@ on:
         default: false
 
 permissions:
+  actions: read
   contents: write
-  pull-requests: write
   id-token: write
+  pull-requests: write
 
 defaults:
   run:
@@ -50,29 +51,28 @@ jobs:
     runs-on: [ ubuntu-latest ]
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@issue1093
+        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@nuget
         with:
           shell: pwsh
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@issue1093
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@nuget
         with:
           shell: pwsh
-          eventId: "DO0092"
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@issue1093
+        uses: freddydk/AL-Go/Actions/ReadSettings@nuget
         with:
           shell: pwsh
           get: type
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@issue1093
+        uses: freddydk/AL-Go/Actions/ReadSecrets@nuget
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -80,11 +80,10 @@ jobs:
           useGhTokenWorkflowForPush: '${{ github.event.inputs.useGhTokenWorkflow }}'
 
       - name: Creating a new app
-        uses: freddydk/AL-Go/Actions/CreateApp@issue1093
+        uses: freddydk/AL-Go/Actions/CreateApp@nuget
         with:
           shell: pwsh
           token: ${{ steps.ReadSecrets.outputs.TokenForPush }}
-          parentTelemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
           project: ${{ github.event.inputs.project }}
           type: ${{ env.type }}
           name: ${{ github.event.inputs.name }}
@@ -95,8 +94,10 @@ jobs:
 
       - name: Finalize the workflow
         if: always()
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@issue1093
+        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@nuget
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         with:
           shell: pwsh
-          eventId: "DO0092"
           telemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
+          currentJobContext: ${{ toJson(job) }}

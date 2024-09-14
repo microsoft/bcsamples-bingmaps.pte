@@ -13,10 +13,10 @@ defaults:
     shell: pwsh
 
 permissions:
-  contents: read
   actions: read
-  pull-requests: read
+  contents: read
   id-token: write
+  pull-requests: read
 
 env:
   workflowDepth: 1
@@ -28,43 +28,40 @@ jobs:
     if: (github.event.pull_request.base.repo.full_name != github.event.pull_request.head.repo.full_name) && (github.event_name != 'pull_request')
     runs-on: windows-latest
     steps:
-      - uses: freddydk/AL-Go/Actions/VerifyPRChanges@issue1093
+      - uses: freddydk/AL-Go/Actions/VerifyPRChanges@nuget
 
   Initialization:
     needs: [ PregateCheck ]
     if: (!failure() && !cancelled())
     runs-on: [ ubuntu-latest ]
     outputs:
-      telemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
-      githubRunner: ${{ steps.ReadSettings.outputs.GitHubRunnerJson }}
-      githubRunnerShell: ${{ steps.ReadSettings.outputs.GitHubRunnerShell }}
       projects: ${{ steps.determineProjectsToBuild.outputs.ProjectsJson }}
       projectDependenciesJson: ${{ steps.determineProjectsToBuild.outputs.ProjectDependenciesJson }}
       buildOrderJson: ${{ steps.determineProjectsToBuild.outputs.BuildOrderJson }}
       baselineWorkflowRunId: ${{ steps.determineProjectsToBuild.outputs.BaselineWorkflowRunId }}
       workflowDepth: ${{ steps.DetermineWorkflowDepth.outputs.WorkflowDepth }}
+      telemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@issue1093
+        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@nuget
         with:
           shell: pwsh
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
           lfs: true
-          ref: refs/pull/${{ github.event.number }}/merge
+          ref: ${{ github.event_name == 'pull_request' && github.sha || format('refs/pull/{0}/merge', github.event.pull_request.number) }}
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@issue1093
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@nuget
         with:
           shell: pwsh
-          eventId: "DO0104"
 
       - name: Read settings
         id: ReadSettings
-        uses: freddydk/AL-Go/Actions/ReadSettings@issue1093
+        uses: freddydk/AL-Go/Actions/ReadSettings@nuget
         with:
           shell: pwsh
 
@@ -75,7 +72,7 @@ jobs:
 
       - name: Determine Projects To Build
         id: determineProjectsToBuild
-        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@issue1093
+        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@nuget
         with:
           shell: pwsh
           maxBuildDepth: ${{ env.workflowDepth }}
@@ -91,10 +88,9 @@ jobs:
     uses: ./.github/workflows/_BuildALGoProject.yaml
     secrets: inherit
     with:
-      shell: ${{ needs.Initialization.outputs.githubRunnerShell }}
-      runsOn: ${{ needs.Initialization.outputs.githubRunner }}
-      checkoutRef: refs/pull/${{ github.event.number }}/merge
-      parentTelemetryScopeJson: ${{ needs.Initialization.outputs.telemetryScopeJson }}
+      shell: ${{ matrix.githubRunnerShell }}
+      runsOn: ${{ matrix.githubRunner }}
+      checkoutRef: ${{ github.event_name == 'pull_request' && github.sha || format('refs/pull/{0}/merge', github.event.pull_request.number) }}
       project: ${{ matrix.project }}
       projectName: ${{ matrix.projectName }}
       buildMode: ${{ matrix.buildMode }}
@@ -112,8 +108,19 @@ jobs:
     steps:
       - name: Pull Request Status Check
         id: PullRequestStatusCheck
-        uses: freddydk/AL-Go/Actions/PullRequestStatusCheck@issue1093
+        uses: freddydk/AL-Go/Actions/PullRequestStatusCheck@nuget
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           shell: pwsh
+
+      - name: Finalize the workflow
+        id: PostProcess
+        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@nuget
+        if: success() || failure()
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          shell: pwsh
+          telemetryScopeJson: ${{ needs.Initialization.outputs.telemetryScopeJson }}
+          currentJobContext: ${{ toJson(job) }}
