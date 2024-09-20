@@ -1,6 +1,6 @@
 {
   "type": "PTE",
-  "templateUrl": "https://github.com/freddydk/AL-Go@nuget",
+  "templateUrl": "https://github.com/microsoft/AL-Go-PTE@preview",
   "currentSchedule": "0 2 * * 1,2,3,4,5",
   "NextMinorSchedule": "0 2 * * 6",
   "NextMajorSchedule": "0 2 * * 0",
@@ -15,5 +15,5 @@
     "MaxReleases": 0
   },
   "keyVaultCodesignCertificateName": "FreddyKristiansen",
-  "templateSha": "ed79ca7a32ac963ab61a3a385acb859ebaffa54e"
+  "templateSha": "ff5817559912b8a13b51c09368f01a623acd2082"
 }

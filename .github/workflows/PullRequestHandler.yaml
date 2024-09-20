@@ -28,7 +28,7 @@ jobs:
     if: (github.event.pull_request.base.repo.full_name != github.event.pull_request.head.repo.full_name) && (github.event_name != 'pull_request')
     runs-on: windows-latest
     steps:
-      - uses: freddydk/AL-Go/Actions/VerifyPRChanges@nuget
+      - uses: microsoft/AL-Go/Actions/VerifyPRChanges@a2a51be438318a7e355fa9044815cf7890ffed1a
 
   Initialization:
     needs: [ PregateCheck ]
@@ -43,7 +43,7 @@ jobs:
       telemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@nuget
+        uses: microsoft/AL-Go/Actions/DumpWorkflowInfo@a2a51be438318a7e355fa9044815cf7890ffed1a
         with:
           shell: pwsh
 
@@ -55,13 +55,13 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@nuget
+        uses: microsoft/AL-Go/Actions/WorkflowInitialize@a2a51be438318a7e355fa9044815cf7890ffed1a
         with:
           shell: pwsh
 
       - name: Read settings
         id: ReadSettings
-        uses: freddydk/AL-Go/Actions/ReadSettings@nuget
+        uses: microsoft/AL-Go/Actions/ReadSettings@a2a51be438318a7e355fa9044815cf7890ffed1a
         with:
           shell: pwsh
 
@@ -72,7 +72,7 @@ jobs:
 
       - name: Determine Projects To Build
         id: determineProjectsToBuild
-        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@nuget
+        uses: microsoft/AL-Go/Actions/DetermineProjectsToBuild@a2a51be438318a7e355fa9044815cf7890ffed1a
         with:
           shell: pwsh
           maxBuildDepth: ${{ env.workflowDepth }}
@@ -108,7 +108,7 @@ jobs:
     steps:
       - name: Pull Request Status Check
         id: PullRequestStatusCheck
-        uses: freddydk/AL-Go/Actions/PullRequestStatusCheck@nuget
+        uses: microsoft/AL-Go/Actions/PullRequestStatusCheck@a2a51be438318a7e355fa9044815cf7890ffed1a
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
@@ -116,7 +116,7 @@ jobs:
 
       - name: Finalize the workflow
         id: PostProcess
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@nuget
+        uses: microsoft/AL-Go/Actions/WorkflowPostProcess@a2a51be438318a7e355fa9044815cf7890ffed1a
         if: success() || failure()
         env:
           GITHUB_TOKEN: ${{ github.token }}

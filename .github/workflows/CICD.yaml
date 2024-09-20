@@ -45,7 +45,7 @@ jobs:
       workflowDepth: ${{ steps.DetermineWorkflowDepth.outputs.WorkflowDepth }}
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@nuget
+        uses: microsoft/AL-Go/Actions/DumpWorkflowInfo@a2a51be438318a7e355fa9044815cf7890ffed1a
         with:
           shell: pwsh
 
@@ -56,13 +56,13 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@nuget
+        uses: microsoft/AL-Go/Actions/WorkflowInitialize@a2a51be438318a7e355fa9044815cf7890ffed1a
         with:
           shell: pwsh
 
       - name: Read settings
         id: ReadSettings
-        uses: freddydk/AL-Go/Actions/ReadSettings@nuget
+        uses: microsoft/AL-Go/Actions/ReadSettings@a2a51be438318a7e355fa9044815cf7890ffed1a
         with:
           shell: pwsh
           get: type, powerPlatformSolutionFolder
@@ -74,7 +74,7 @@ jobs:
 
       - name: Determine Projects To Build
         id: determineProjectsToBuild
-        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@nuget
+        uses: microsoft/AL-Go/Actions/DetermineProjectsToBuild@a2a51be438318a7e355fa9044815cf7890ffed1a
         with:
           shell: pwsh
           maxBuildDepth: ${{ env.workflowDepth }}
@@ -87,7 +87,7 @@ jobs:
 
       - name: Determine Delivery Target Secrets
         id: DetermineDeliveryTargetSecrets
-        uses: freddydk/AL-Go/Actions/DetermineDeliveryTargets@nuget
+        uses: microsoft/AL-Go/Actions/DetermineDeliveryTargets@a2a51be438318a7e355fa9044815cf7890ffed1a
         with:
           shell: pwsh
           projectsJson: '${{ steps.determineProjectsToBuild.outputs.ProjectsJson }}'
@@ -95,7 +95,7 @@ jobs:
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@nuget
+        uses: microsoft/AL-Go/Actions/ReadSecrets@a2a51be438318a7e355fa9044815cf7890ffed1a
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -103,7 +103,7 @@ jobs:
 
       - name: Determine Delivery Targets
         id: DetermineDeliveryTargets
-        uses: freddydk/AL-Go/Actions/DetermineDeliveryTargets@nuget
+        uses: microsoft/AL-Go/Actions/DetermineDeliveryTargets@a2a51be438318a7e355fa9044815cf7890ffed1a
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
@@ -113,7 +113,7 @@ jobs:
 
       - name: Determine Deployment Environments
         id: DetermineDeploymentEnvironments
-        uses: freddydk/AL-Go/Actions/DetermineDeploymentEnvironments@nuget
+        uses: microsoft/AL-Go/Actions/DetermineDeploymentEnvironments@a2a51be438318a7e355fa9044815cf7890ffed1a
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
@@ -129,13 +129,13 @@ jobs:
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@nuget
+        uses: microsoft/AL-Go/Actions/ReadSettings@a2a51be438318a7e355fa9044815cf7890ffed1a
         with:
           shell: pwsh
           get: templateUrl
 
       - name: Check for updates to AL-Go system files
-        uses: freddydk/AL-Go/Actions/CheckForUpdates@nuget
+        uses: microsoft/AL-Go/Actions/CheckForUpdates@a2a51be438318a7e355fa9044815cf7890ffed1a
         with:
           shell: pwsh
           templateUrl: ${{ env.templateUrl }}
@@ -187,7 +187,7 @@ jobs:
           path: '.artifacts'
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@nuget
+        uses: microsoft/AL-Go/Actions/ReadSettings@a2a51be438318a7e355fa9044815cf7890ffed1a
         with:
           shell: pwsh
 
@@ -196,7 +196,7 @@ jobs:
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
 
       - name: Build Reference Documentation
-        uses: freddydk/AL-Go/Actions/BuildReferenceDocumentation@nuget
+        uses: microsoft/AL-Go/Actions/BuildReferenceDocumentation@a2a51be438318a7e355fa9044815cf7890ffed1a
         with:
           shell: pwsh
           artifacts: '.artifacts'
@@ -233,7 +233,7 @@ jobs:
           path: '.artifacts'
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@nuget
+        uses: microsoft/AL-Go/Actions/ReadSettings@a2a51be438318a7e355fa9044815cf7890ffed1a
         with:
           shell: ${{ matrix.shell }}
           get: type,powerPlatformSolutionFolder
@@ -247,7 +247,7 @@ jobs:
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@nuget
+        uses: microsoft/AL-Go/Actions/ReadSecrets@a2a51be438318a7e355fa9044815cf7890ffed1a
         with:
           shell: ${{ matrix.shell }}
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -255,7 +255,7 @@ jobs:
 
       - name: Deploy to Business Central
         id: Deploy
-        uses: freddydk/AL-Go/Actions/Deploy@nuget
+        uses: microsoft/AL-Go/Actions/Deploy@a2a51be438318a7e355fa9044815cf7890ffed1a
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
@@ -267,7 +267,7 @@ jobs:
 
       - name: Deploy to Power Platform
         if: env.type == 'PTE' && env.powerPlatformSolutionFolder != ''
-        uses: freddydk/AL-Go/Actions/DeployPowerPlatform@nuget
+        uses: microsoft/AL-Go/Actions/DeployPowerPlatform@a2a51be438318a7e355fa9044815cf7890ffed1a
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
@@ -295,20 +295,20 @@ jobs:
           path: '.artifacts'
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@nuget
+        uses: microsoft/AL-Go/Actions/ReadSettings@a2a51be438318a7e355fa9044815cf7890ffed1a
         with:
           shell: pwsh
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@nuget
+        uses: microsoft/AL-Go/Actions/ReadSecrets@a2a51be438318a7e355fa9044815cf7890ffed1a
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
           getSecrets: '${{ matrix.deliveryTarget }}Context'
 
       - name: Deliver
-        uses: freddydk/AL-Go/Actions/Deliver@nuget
+        uses: microsoft/AL-Go/Actions/Deliver@a2a51be438318a7e355fa9044815cf7890ffed1a
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
@@ -328,7 +328,7 @@ jobs:
 
       - name: Finalize the workflow
         id: PostProcess
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@nuget
+        uses: microsoft/AL-Go/Actions/WorkflowPostProcess@a2a51be438318a7e355fa9044815cf7890ffed1a
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
