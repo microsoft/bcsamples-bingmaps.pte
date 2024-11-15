@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       templateUrl:
-        description: Template Repository URL (current is https://github.com/freddydk/AL-Go@pagescript)
+        description: Template Repository URL (current is https://github.com/microsoft/AL-Go-PTE@preview)
         required: false
         default: ''
       downloadLatest:
@@ -38,28 +38,28 @@ jobs:
     runs-on: [ ubuntu-latest ]
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@pagescript
+        uses: microsoft/AL-Go-Actions/DumpWorkflowInfo@v6.1
         with:
           shell: pwsh
 
       - name: Checkout
-        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@pagescript
+        uses: microsoft/AL-Go-Actions/WorkflowInitialize@v6.1
         with:
           shell: pwsh
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@pagescript
+        uses: microsoft/AL-Go-Actions/ReadSettings@v6.1
         with:
           shell: pwsh
           get: templateUrl
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@pagescript
+        uses: microsoft/AL-Go-Actions/ReadSecrets@v6.1
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -95,7 +95,7 @@ jobs:
           Add-Content -Encoding UTF8 -Path $env:GITHUB_ENV -Value "downloadLatest=$downloadLatest"
 
       - name: Update AL-Go system files
-        uses: freddydk/AL-Go/Actions/CheckForUpdates@pagescript
+        uses: microsoft/AL-Go-Actions/CheckForUpdates@v6.1
         with:
           shell: pwsh
           token: ${{ fromJson(steps.ReadSecrets.outputs.Secrets).ghTokenWorkflow }}
@@ -106,7 +106,7 @@ jobs:
 
       - name: Finalize the workflow
         if: always()
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@pagescript
+        uses: microsoft/AL-Go-Actions/WorkflowPostProcess@v6.1
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
