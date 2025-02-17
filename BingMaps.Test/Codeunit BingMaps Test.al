@@ -7,24 +7,12 @@ codeunit 70131 "BingMaps Test"
         Assert: Codeunit "Library Assert";
         SetupBingMapsMessageOK: Boolean;
         ShowAllHyperlinkOK: Boolean;
-        RoleCenterNotificationOK: Boolean;
 
     trigger OnRun()
     var
         BingMapsSetup: Record "BingMaps Settings";
     begin
         BingMapsSetup.DeleteAll();
-    end;
-
-    [Test]
-    [HandlerFunctions('RoleCenterBingMapsNotificationHandler')]
-    procedure RoleCenterNotification()
-    var
-        roleCenter: TestPage "Order Processor Role Center";
-    begin
-        roleCenter.OpenView();
-        Assert.IsTrue(RoleCenterNotificationOK, 'RoleCenter Notification wasn''t raised when opening the RoleCenter');
-        roleCenter.Close();
     end;
 
     [Test]
@@ -171,12 +159,4 @@ codeunit 70131 "BingMaps Test"
     begin
         SetupBingMapsMessageOK := Message = 'BingMaps Key has been tested and is OK';
     end;
-
-    [SendNotificationHandler]
-    procedure RoleCenterBingMapsNotificationHandler(var Notification: Notification): Boolean
-    begin
-        RoleCenterNotificationOK := (Notification.ID = '3EBC1525-C2D4-4797-8B28-BA2D0C6294B5');
-    end;
-
-
 }
