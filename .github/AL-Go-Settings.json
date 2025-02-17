@@ -14,6 +14,7 @@
     "ContinuousDeployment": true,
     "MaxReleases": 0
   },
+  "doNotSignApps": true,
   "keyVaultCodesignCertificateName": "FreddyKristiansen",
   "templateSha": "50903624159826257124c0f799a1b4add9b0260b"
 }
