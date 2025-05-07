@@ -1,6 +1,6 @@
 {
   "type": "PTE",
-  "templateUrl": "https://github.com/microsoft/AL-Go-PTE@preview",
+  "templateUrl": "https://github.com/freddydk/AL-Go@avoidallsecrets",
   "currentSchedule": "0 2 * * 1,2,3,4,5",
   "NextMinorSchedule": "0 2 * * 6",
   "NextMajorSchedule": "0 2 * * 0",
@@ -16,5 +16,5 @@
   },
   "doNotSignApps": true,
   "keyVaultCodesignCertificateName": "FreddyKristiansen",
-  "templateSha": "8fedaa0bba2cf96f8b2b0c57b7d4ba88e9c7069b"
+  "templateSha": "cea4a38504516c2b4666d19a2d40263bfd19fe02"
 }
