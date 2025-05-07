@@ -14,8 +14,6 @@
     "ContinuousDeployment": true,
     "MaxReleases": 0
   },
-  "useCompilerFolder": true,
-  "doNotPublishApps": true,
   "doNotSignApps": true,
   "keyVaultCodesignCertificateName": "FreddyKristiansen",
   "templateSha": "8fedaa0bba2cf96f8b2b0c57b7d4ba88e9c7069b"
