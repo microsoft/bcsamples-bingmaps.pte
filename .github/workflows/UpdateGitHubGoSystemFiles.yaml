@@ -105,6 +105,13 @@ jobs:
           shell: pwsh
           get: commitOptions
 
+      - name: Determine secrets
+        id: DetermineSecrets
+        uses: freddydk/AL-Go/Actions/DetermineSecrets@avoidallsecrets
+        with:
+          shell: pwsh
+          getSecrets: 'ghTokenWorkflow'
+
       - name: Read secrets
         id: ReadSecrets
         uses: freddydk/AL-Go/Actions/ReadSecrets@avoidallsecrets

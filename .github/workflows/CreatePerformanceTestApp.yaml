@@ -75,6 +75,14 @@ jobs:
         with:
           shell: pwsh
 
+      - name: Determine secrets
+        id: DetermineSecrets
+        uses: freddydk/AL-Go/Actions/DetermineSecrets@avoidallsecrets
+        with:
+          shell: pwsh
+          getSecrets: 'TokenForPush'
+          useGhTokenWorkflowForPush: '${{ github.event.inputs.useGhTokenWorkflow }}'
+
       - name: Read secrets
         id: ReadSecrets
         uses: freddydk/AL-Go/Actions/ReadSecrets@avoidallsecrets
