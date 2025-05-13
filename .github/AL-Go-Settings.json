@@ -1,4 +1,5 @@
 {
+  "$schema": "https://raw.githubusercontent.com/freddydk/AL-Go/avoidallsecrets/Actions/settings.schema.json",
   "type": "PTE",
   "templateUrl": "https://github.com/freddydk/AL-Go@avoidallsecrets",
   "currentSchedule": "0 2 * * 1,2,3,4,5",
@@ -16,5 +17,5 @@
   },
   "doNotSignApps": true,
   "keyVaultCodesignCertificateName": "FreddyKristiansen",
-  "templateSha": "cea4a38504516c2b4666d19a2d40263bfd19fe02"
+  "templateSha": "4b38887f486be3d95a3cce1f04a61f915bb84548"
 }

@@ -1,4 +1,5 @@
 {
+  "$schema": "https://raw.githubusercontent.com/freddydk/AL-Go/avoidallsecrets/Actions/settings.schema.json",
   "country": "us",
   "VersioningStrategy": 16,
   "appFolders": [
