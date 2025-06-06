@@ -1,4 +1,5 @@
 {
+  "$schema": "https://raw.githubusercontent.com/microsoft/AL-Go-Actions/v7.2/settings.schema.json",
   "type": "PTE",
   "templateUrl": "https://github.com/microsoft/AL-Go-PTE@preview",
   "currentSchedule": "0 2 * * 1,2,3,4,5",
@@ -16,5 +17,5 @@
   },
   "doNotSignApps": true,
   "keyVaultCodesignCertificateName": "FreddyKristiansen",
-  "templateSha": "cea4a38504516c2b4666d19a2d40263bfd19fe02"
+  "templateSha": "773587b64b7cff61b6549b9fa126ca8125684f20"
 }
