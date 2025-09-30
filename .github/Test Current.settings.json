@@ -2,5 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/microsoft/AL-Go/55f06533726d052e7603277236f2bcbcd67fa6cf/Actions/settings.schema.json",
   "artifact": "////latest",
   "cacheImageName": "",
-  "versioningStrategy": 15
+  "versioningStrategy": 15,
+  "workflowSchedule": {
+    "cron": "0 2 * * 1,2,3,4,5"
+  }
 }
