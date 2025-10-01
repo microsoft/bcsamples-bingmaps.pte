@@ -4,6 +4,6 @@
   "cacheImageName": "",
   "versioningStrategy": 15,
   "workflowSchedule": {
-      "cron": "0 2 * * 0"
+    "cron": "0 2 * * 0"
   }
 }
