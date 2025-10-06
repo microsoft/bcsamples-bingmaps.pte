@@ -4,12 +4,14 @@
   "templateUrl": "https://github.com/microsoft/AL-Go-PTE@preview",
   "conditionalSettings": [
     {
-        "workflows": [ "Update AL-Go System Files" ],
-        "settings": {
-            "workflowSchedule": {
-                "cron": "0 0 * * *"
-            }
+      "workflows": [
+        "Update AL-Go System Files"
+      ],
+      "settings": {
+        "workflowSchedule": {
+          "cron": "0 0 * * *"
         }
+      }
     }
   ],
   "runs-on": "ubuntu-latest",
