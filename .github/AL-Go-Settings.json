@@ -19,6 +19,8 @@
   "githubRunner": "windows-latest",
   "githubRunnerShell": "pwsh",
   "UpdateDependencies": true,
+  "useWorkspaceCompilation": true,
+  "workspaceCompilationParallelism": -1,
   "ALDoc": {
     "ContinuousDeployment": true,
     "MaxReleases": 0
