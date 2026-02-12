@@ -25,5 +25,6 @@
   },
   "doNotSignApps": true,
   "keyVaultCodesignCertificateName": "FreddyKristiansen",
-  "templateSha": "cb1099b0e43feda0a5b7a10e106fdf936002898e"
+  "templateSha": "cb1099b0e43feda0a5b7a10e106fdf936002898e",
+  "PullRequestTrigger": "pull_request"
 }
