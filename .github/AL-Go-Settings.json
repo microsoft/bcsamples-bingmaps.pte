@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/microsoft/AL-Go/55f06533726d052e7603277236f2bcbcd67fa6cf/Actions/.Modules/settings.schema.json",
+  "$schema": "https://raw.githubusercontent.com/microsoft/AL-Go/a9607037a663262cf2c2b886ab0c94ad70e6ab6d/Actions/.Modules/settings.schema.json",
   "type": "PTE",
   "templateUrl": "https://github.com/microsoft/AL-Go-PTE@preview",
   "conditionalSettings": [
@@ -25,6 +25,6 @@
   },
   "doNotSignApps": true,
   "keyVaultCodesignCertificateName": "FreddyKristiansen",
-  "templateSha": "cb1099b0e43feda0a5b7a10e106fdf936002898e",
+  "templateSha": "e9f5229bbee4cd2f2c8676dd630550ca43236f63",
   "PullRequestTrigger": "pull_request"
 }
