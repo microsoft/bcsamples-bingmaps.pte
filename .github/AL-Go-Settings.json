@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/AL-Go/55f06533726d052e7603277236f2bcbcd67fa6cf/Actions/.Modules/settings.schema.json",
   "type": "PTE",
-  "templateUrl": "https://github.com/microsoft/AL-Go-PTE@preview",
+  "templateUrl": "https://github.com/microsoft/AL-Go@aholstrup/workspace_compilationm",
   "conditionalSettings": [
     {
       "workflows": [
@@ -23,6 +23,8 @@
     "ContinuousDeployment": true,
     "MaxReleases": 0
   },
+  "useWorkspaceCompilation": true,
+  "workspaceCompilationParallelism": -1,
   "doNotSignApps": true,
   "keyVaultCodesignCertificateName": "FreddyKristiansen",
   "templateSha": "cb1099b0e43feda0a5b7a10e106fdf936002898e",
