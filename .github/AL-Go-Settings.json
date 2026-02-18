@@ -28,5 +28,6 @@
   "doNotSignApps": true,
   "keyVaultCodesignCertificateName": "FreddyKristiansen",
   "templateSha": "51465adf6893e8e15af86a68099af9ca188403b3",
+  "artifact": "bcinsider/Sandbox/28.0.46340.0//latest",
   "PullRequestTrigger": "pull_request"
 }
